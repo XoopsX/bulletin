@@ -20,11 +20,14 @@
      <p><input type="text" name="title" value="<{$title}>" size="50" maxlength="80" /></p>
      <h3><{$smarty.const._MD_THESCOOP}></h3>
      <div id="area_dhtmltarea">
-          <label><input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" /><{$smarty.const._MD_INPUTHELPER}></label>
+          <label>
+		  <input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" />
+          <{$smarty.const._MD_INPUTHELPER}>
+          </label>
           <br />
-          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;" post_style="display:none;"}>
+          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;width: 95%; height: auto;" post_style="display:none;width: 95%; height: auto;"}>
      </div>
-     <{if $use_fckeditor}>
+     <{if $use_fckeditor && $common_fck_installed && $xcode!="1" && $br!="1" && $smiley!="1" }>
           <div id="area_fckxoops">
             <script type="text/javascript" src="<{$xoops_url}>/common/fckeditor/fckeditor.js"></script>
             <script type="text/javascript">
@@ -40,12 +43,16 @@
               xoopsGetElementById('area_dhtmltarea').style.display='none';
             </script>
           </div>
-          <label><input type="checkbox" name="using_fck" checked="checked" onclick="var td=xoopsGetElementById('area_dhtmltarea');var tf=xoopsGetElementById('area_fckxoops');if(this.checked){tf.style.display='block';td.style.display='none';}else{td.style.display='block';tf.style.display='none';};" /><{$smarty.const._MD_FCKXOOPS_ONOFF}></label>
-    <{/if}>
+          <label>
+          <input type="checkbox" name="using_fck" checked="checked" onclick="var td=xoopsGetElementById('area_dhtmltarea');var tf=xoopsGetElementById('area_fckxoops');if(this.checked){tf.style.display='block';td.style.display='none';}else{td.style.display='block';tf.style.display='none';};" />
+          <{$smarty.const._MD_FCKXOOPS_ONOFF}>
+          </label>
+	<{/if}>
     <div><{$smarty.const._MULTIPAGE}></div>
 </div>
 <div id="jquery-ui-accordion">
   <div align="center">
+
 	<div class="jquery-ui-accordion-title"><{$smarty.const._MD_TOPIC}></div>
     <div class="jquery-ui-accordion-contents">
       <{if $storyid}>
@@ -61,7 +68,10 @@
           <option value="0"<{if $topicimg==0}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_DISABLE}></option>
       </select>
 	</div>
-
+  <{*
+  <input type="hidden" name="topicid" value="<{$topic_selbox2}>">
+  <input type="hidden" name="topicimg" value="0">
+  *}>
     <{if $can_use_date}>
       <div class="jquery-ui-accordion-title"><{$smarty.const._MD_PUBLISHED}></div>
       <div class="jquery-ui-accordion-contents">

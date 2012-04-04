@@ -1,6 +1,11 @@
 <?php /* English Translation by Marcelo Yuji Himoro <http://yuji.ws> */
 // Blocks
 
+if( defined( "FOR_XOOPS_LANG_CHECKER" ) || ! defined( "_MB_BULLETIN_LOADED" ) ) {
+
+// a flag for this language file has already been read or not.
+define( "_MB_BULLETIN_LOADED" , 1 ) ;
+
 define("_MB_BULLETIN_NOTYET","There is no top story today, yet.");
 define("_MB_BULLETIN_TMRSI","Today's most read story is:");
 define("_MB_BULLETIN_ORDER","Order by");
@@ -30,4 +35,6 @@ define("_MB_BULLETIN_BYTESMORE","%s bytes to go");
 define("_MB_BULLETIN_NUMCOMMENTS","%s comments");
 
 define("_MB_BULLETIN_MORE","See more news");
+
+}
 ?>

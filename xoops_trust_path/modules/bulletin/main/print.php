@@ -2,7 +2,7 @@
 
 $storyid = isset($_GET['storyid']) ? intval($_GET['storyid']) : 0;
 
-// 記事が存在しない場合
+// If there are no articles
 if( !Bulletin::isPublishedExists( $mydirname , $storyid) ){
 	redirect_header($mydirurl.'/index.php',2,_MD_NOSTORY);
 	exit();
@@ -11,6 +11,12 @@ if( !Bulletin::isPublishedExists( $mydirname , $storyid) ){
 require_once XOOPS_ROOT_PATH.'/class/template.php';
 
 $article = new Bulletin( $mydirname , $storyid);
+
+$gperm =& BulletinGP::getInstance($mydirname) ;
+if( ! $gperm->proceed4topic('can_read',$article->getVar('topicid')) ){
+//	redirect_header($mydirurl.'/index.php',2,_NOPERM);
+	exit();
+}
 
 $datetime = formatTimestamp($article->getVar('published'), $bulletin_date_format);
 

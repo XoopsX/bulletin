@@ -32,18 +32,25 @@ $topicid = isset($_POST['topicid']) ? intval($_POST['topicid']) : $topicid;
  * Data loading section
  */
 $story = new Bulletin( $mydirname , $storyid );
+
 if ( $storyid ){
 	$topicid = $story->getVar('topicid');
-}
-if( $topicid ){
-	$story->setVar('topicid', $topicid);
+	if( empty($topicid) ){
+		die(_MD_NO_TOPICS);
+		exit;
+	}
 }
 // In case of No Topic
 $BTopic = new BulletinTopic( $mydirname, $topicid );
+$topicid = $BTopic->getTopicIdByPermissionCheck($topicid);
+if( $topicid ){
+	$story->setVar('topicid', $topicid);
+}
 if( !$BTopic->topicExists() ){
 	die(_MD_NO_TOPICS);
 	exit;
 }
+
 $xoopsTpl->assign('topic_title', $BTopic->topic_title());
 
 // Chanege the WSYWIG editor
@@ -55,13 +62,21 @@ $str_arr = array('title','text');
 $int_arr = array('topicid','type','topicimg','published','expired');
 $bai_arr = array('html','smiley','br','xcode','autodate','autoexpdate','notifypub','block','ihome','approve');
 foreach( $str_arr as $k ){
-	if( isset($_POST[$k]) ) $story->setVar($k, $_POST[$k]);
+	if( isset($_POST[$k]) ){
+		$story->setVar($k, $_POST[$k]);
+	}
 }
 foreach( $int_arr as $k ){
-	if( isset($_POST[$k]) ) $story->setVar($k, $_POST[$k]);
+	if( isset($_POST[$k]) ){
+		$story->setVar($k, $_POST[$k]);
+	}
 }
+$notifypub_pre_data = 0;
 foreach( $bai_arr as $k ){
 	if( $_SERVER['REQUEST_METHOD'] == 'POST' ){
+		if( $k == 'notifypub' ){
+			$notifypub_pre_data = $story->getVar('notifypub');
+		}
 		$_POST[$k] = isset( $_POST[$k] ) ? 1 : 0 ;
 		$story->setVar($k, $_POST[$k]);
 	}
@@ -80,20 +95,43 @@ if( $gperm->group_perm(7) && $bulletin_use_relations ){
 		$relations = array();
 	}
 }
-
+//new story
 if( empty( $storyid ) ){
-	// 権限がない場合HTMLをOFF
+	// If you do not have HTML permission to OFF
 	if( !$gperm->group_perm(4) ){
 		$story->setVar('html', 0);
 		$story->setVar('br', 1);
 	}
-	if( !$gperm->group_perm(2) ){
-		$story->setVar('approve', 0);
+	//post approve
+	if( empty($topicid)){
+		//initial new post approve
+		if( $gperm->group_perm(2) || $gperm->proceed4topic("post_auto_approved",$topicid)){
+			$story->setVar('approve', 1);
+		}else{
+			$story->setVar('approve', 0);
+		}
+	}else{
+		if( !$gperm->group_perm(2) ){
+			if( $gperm->proceed4topic("post_auto_approved",$topicid)){
+				$story->setVar('approve', 1);
+			}else{
+				$story->setVar('approve', 0);
+			}
+		}
 	}
+
 }
 
 if( $op == 'post' ){
-	if(!$gperm->proceed4topic("can_post",$topicid)){ die(_NOPERM); exit(); }
+	//need can post of group premition
+	if (!$gperm->group_perm(1)){
+		die(_NOPERM);
+	}
+	//category ca_post
+	if(!$gperm->proceed4topic("can_post",$topicid)){
+		die(_NOPERM);
+	}
+
 	$time = time();
 	$auto['year']  = isset( $_POST['auto']['year'] )  ? intval( $_POST['auto']['year'] )  : formatTimestamp($time, 'Y');
 	$auto['month'] = isset( $_POST['auto']['month'] ) ? intval( $_POST['auto']['month'] ) : formatTimestamp($time, 'n');
@@ -113,15 +151,23 @@ if( $op == 'post' ){
 		$story->setVar('uid', $my_uid);
 		$story->devideHomeTextAndBodyText();
 
-		// 自動承認かどうか
+		// Whether the automatic approval
+		// approve this article
+		$approved = 0;
 		if( $gperm->group_perm(2) ){
 			$story->setVar('type', $story->getVar('approve') ); // GIJ
-			if(!$gperm->proceed4topic("post_auto_approved",$topicid)){ $story->setVar('type', 0); }
+			$approved = $story->getVar('approve');
 		}else{
-			$story->setVar('type', 0);
+			if( $gperm->proceed4topic("post_auto_approved",$topicid)){
+				$story->setVar('type', 1);
+				$approved = 1;
+			}else{
+				$story->setVar('type', 0);
+				$approved = 0;
+			}
 		}
 
-		// 掲載予定日設定のルーチン
+		// Routine setting date published
 		if ( $story->getVar('autodate') == 1 && $gperm->group_perm(3) ){
 			$pubdate = mktime( $auto['hour'], $auto['min'], $auto['sec'], $auto['month'], $auto['day'], $auto['year'] );
 			$offset  = $xoopsUser->timezone() - $xoopsConfig['server_TZ'];
@@ -130,7 +176,7 @@ if( $op == 'post' ){
 		}else{
 			$story->setVar('published', time());
 		}
-		// 掲載終了日設定のルーティン
+		// Routines set end date published
 		if ( $story->getVar('autoexpdate') == 1 && $gperm->group_perm(3) ){
 			$expdate = mktime( $autoexp['hour'], $autoexp['min'], $autoexp['sec'], $autoexp['month'], $autoexp['day'], $autoexp['year'] );
 			$offset = $xoopsUser -> timezone() - $xoopsConfig['server_TZ'];
@@ -141,21 +187,29 @@ if( $op == 'post' ){
 		}
 		$is_new = true;
 	}else{
-		// edited post
-		
-		if(!$gperm->proceed4topic("can_edit",$topicid)){ die(_NOPERM); exit(); }
+		// edited edit
+		//need can post of group premition
+		if (!$gperm->group_perm(1)){
+			die(_NOPERM);
+		}
+		//category can_edit
+		if(!$gperm->proceed4topic("can_edit",$topicid)){
+			die(_NOPERM);
+		}
 		$story->devideHomeTextAndBodyText();
 
-		// approve this article
+		// approve this article when edit
 		$approved = 0;
-		if ( $story->getVar('approve') == 1 ){
-			if( $story->getVar('type') == 0) $approved = 1;
-			$story->setVar('type', 1);
-		}else{
-			$story->setVar('type', 0);
+		if ( $gperm->group_perm(2)){
+			if ( $story->getVar('approve') == 1 ){
+				$story->setVar('type', 1);
+				$approved = 1;
+			}else{
+				$story->setVar('type', 0);
+			}
 		}
 
-		// 掲載予定日設定のルーチン
+		// Routine setting date published
 		if ( $story->getVar('autodate') == 1 ){
 			$pubdate = mktime( $auto['hour'], $auto['min'], $auto['sec'], $auto['month'], $auto['day'], $auto['year'] );
 			$offset = $xoopsUser -> timezone();
@@ -166,7 +220,7 @@ if( $op == 'post' ){
 			$story->setVar('published', $time);
 		}
 
-		// 掲載終了日設定のルーティン
+		// Routines set end date published
 		if ( $story->getVar('autoexpdate') == 1 ){
 			$expdate = mktime( $autoexp['hour'], $autoexp['min'], $autoexp['sec'], $autoexp['month'], $autoexp['day'], $autoexp['year'] );
 			if ( !empty( $autoexpdate ) ) $offset = $xoopsUser -> timezone() - $xoopsConfig['server_TZ'];
@@ -177,7 +231,7 @@ if( $op == 'post' ){
 		}
 		$is_new = false;
 	}
-	//DB挿入時にエラーが発生したら
+	//If an error occurs when inserting DB
 	if(!$story->store()) {
 		die(_MD_THANKS_BUT_ERROR);
 	}
@@ -190,45 +244,70 @@ if( $op == 'post' ){
 	}
 
 	if( $is_new ){
-		// イベント通知処理
+		// Event notification process
 		$notification_handler =& xoops_gethandler('notification');
 		$tags = array();
 		$tags['STORY_NAME'] = $myts->stripSlashesGPC($story->getVar('title', 'n'));
 		$tags['STORY_URL']  = $mydirurl.'/index.php?page=article&storyid=' . $story->getVar('storyid');
-		if($gperm->group_perm(2)){
-			$notification_handler->triggerEvent('global', 0, 'new_story', $tags);
-		} else {
+		// Notified when approval
+		//when new post is  auto approve
+		if($story->getVar('type')==1){
+			//new story
+			$notification_handler->triggerEvent('global', 0, 'new_story', $tags, $gperm->getCanReadUsersByTopic($topicid) );
+			//for one time notifiction
+			$story->setVar('notifypub', 0);
+		}else{
+			//appoved event one time subscribe
+			if ($story->getVar('notifypub') == 1) {
+				require_once XOOPS_ROOT_PATH.'/include/notification_constants.php';
+				$notification_handler->subscribe('story', $story->getVar('storyid'), 'approve', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
+			}
+			//can approve user and adinm only
+			$tags['WAITINGSTORIES_URL'] = $mydirurl.'/index.php?page=submit&storyid=' . $story->getVar('storyid');
 			// admin only
-			$tags['WAITINGSTORIES_URL'] = $mydirurl.'/index.php?mode=admin&op=newarticle';
-			$notification_handler->triggerEvent('global', 0, 'story_submit', $tags, $gperm->getAdminUsers());
+			$tags['ADMIN_WAITINGSTORIES_URL'] = $mydirurl.'/index.php?mode=admin&op=newarticle';
+			$notification_handler->triggerEvent('global', 0, 'story_submit', $tags, $gperm->getCanApproveUsers());
+			//for one time notifiction
+			$story->setVar('notifypub', 1);
 		}
-		// 承認したときに通知を受け取る
-		if ($story->getVar('notifypub') == 1 && !$gperm->group_perm(2)) {
-			require_once XOOPS_ROOT_PATH.'/include/notification_constants.php';
-			$notification_handler->subscribe('story', $story->getVar('storyid'), 'approve', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
+		//save notifypub for one time notifiction
+		if(!$story->store()) {
+			die(_MD_THANKS_BUT_ERROR);
 		}
-		//投稿数加算処理
-		if ($gperm->group_perm(2) && is_object($xoopsUser) && $bulletin_plus_posts == 1) {
+		//Adding process Posts
+		if (is_object($xoopsUser) && $bulletin_plus_posts == 1) {
 			$xoopsUser->incrementPost();
 		}
-		// 自動承認のときはメッセージを変える
-		if($gperm->group_perm(2)){
+
+		// When the automatic approval to change the message
+		if($story->getVar('type')==1 ){
 			redirect_header($mydirurl.'/index.php', 2, _MD_THANKS_AUTOAPPROVE);
 			exit;
 		}
 		redirect_header($mydirurl.'/index.php', 3, _MD_THANKS);
 		exit;
 	}else{
-		// イベント通知処理
+		// Event notification process
 		$notification_handler =& xoops_gethandler('notification');
 		$tags = array();
 		$tags['STORY_NAME'] = $myts->stripSlashesGPC($story->getVar('title', 'n'));
 		$tags['STORY_URL']  = $mydirurl.'/index.php?page=article&storyid=' . $story->getVar('storyid');
-		// 承認の通知
-		if ( $approved == 1 ){
+		// Notification of Approval
+		if ( $approved == 1 && $notifypub_pre_data == 1){
 			$notification_handler->triggerEvent( 'story', $story->getVar('storyid'), 'approve', $tags );
-			$notification_handler->triggerEvent('global', 0, 'new_story', $tags);
+			$notification_handler->triggerEvent('global', 0, 'new_story', $tags, $gperm->getCanReadUsersByTopic($topicid) );
+
+			//for one time event post
+			if($story->getVar('notifypub')==1){
+				$story->setVar('notifypub', 0);
+				//If an error occurs when rewriting DB for notifypub reset
+				if(!$story->store()) {
+					die(_MD_THANKS_BUT_ERROR);
+				}
+			}
+
 		}
+
 		if ( $return == 1 || $story->getVar('published') > time() ){
 			redirect_header($mydirurl.'/index.php?mode=admin&op=list', 3, _MD_DBPUDATED);
 		}else{
@@ -253,19 +332,49 @@ if( $op == 'preview' ){
 	$op = 'form';
 }
 if( $op == 'form' ){
-	// for edit
+	// for post
+	if (!$gperm->group_perm(1)){
+		die(_NOPERM);
+	}
+	//notice when no can_post access
 	$topics = $gperm->makeOnTopics("can_post");
-	if ($topicid==0) $topicid = $topics[0];
-	$proceed = $gperm->proceed4topic("can_post",$topicid);
-	if (!$topics || !$proceed){ die(_NOPERM); exit(); }
-	
-	$xoopsTpl->assign('topic_selbox', $BTopic->makeMyTopicList($topicid,$topics) );
+	if (empty($topics)){
+		die(_NOPERM);
+	}
+	if ($topicid==0){
+		$topicid = $topics[0];
+	}else{
+		$proceed = $gperm->proceed4topic("can_post",$topicid);
+		if (!$proceed){
+			die(_NOPERM);
+		}
+		//TODO edit access
+		if ( !empty( $storyid ) ){// for edit
+			$proceed = $gperm->proceed4topic("can_edit",$topicid);
+			if (!$proceed){
+				die(_NOPERM);
+			}
 
+			//TODO user only
+			//you can edit only your article
+			$topic_perm = $gperm->get_viewtopic_perm_of_current_user($story->getVar('topicid') , $story->getVar('uid'));
+			if (!empty($topic_perm)){
+				if (!$topic_perm['can_edit']){
+					die(_NOPERM);//when user,only article of user
+				}
+			}
+
+		}
+	}
+
+	$xoopsTpl->assign('topic_selbox', $BTopic->makeMyTopicList($topicid,$topics) );
+	//H.Onuma
+	$xoopsTpl->assign('topic_selbox2', $BTopic->makeMyTopicList2($topicid,$topics) );
 	if( $storyid  && $story->getVar('text', 'n') == '' ){
 		$story->unifyHomeTextAndBodyText();
 	}
 
-	// 掲載日時
+	// Published Date
 	if( isset($_POST['auto']) && is_array($_POST['auto']) ){
 		$auto = mktime( $_POST['auto']['hour'], $_POST['auto']['min'], @$_POST['auto']['sec'], $_POST['auto']['month'], $_POST['auto']['day'], $_POST['auto']['year'] );
 	} elseif ( $story->getVar('published') > 0 ) {
@@ -275,7 +384,7 @@ if( $op == 'form' ){
 		$auto = time();
 	}
 
-	// 掲載終了日時
+	// Published end date
 	if( isset($_POST['auto']) && is_array($_POST['autoexp']) ){
 		$autoexp = mktime( $_POST['autoexp']['hour'], $_POST['autoexp']['min'], @$_POST['autoexp']['sec'], $_POST['autoexp']['month'], $_POST['autoexp']['day'], $_POST['autoexp']['year'] );
 	} elseif ( $story->getVar('expired') > 0 ) {
@@ -302,13 +411,28 @@ if( $op == 'form' ){
 }
 
 if( $op == 'delete' ){
-	if(!$gperm->proceed4topic("can_delete",$topicid)){ die(_NOPERM); exit(); }
-	if(!$isadmin){
+	if(empty($storyid)){
 		die(_NOPERM);
 		exit();
 	}
-	$storyid = isset( $_GET['storyid'] ) ? intval( $_GET['storyid'] ) : 0 ;
-	
+	//need can post of group premition
+	if (!$gperm->group_perm(1)){
+		die(_NOPERM);
+	}
+	//category can_delete
+	if(!$gperm->proceed4topic("can_delete",$topicid)){
+		die(_NOPERM);
+	}
+
+	//TODO user only
+	//you can edit only your article
+	$topic_perm = $gperm->get_viewtopic_perm_of_current_user($story->getVar('topicid') , $story->getVar('uid'));
+	if (!empty($topic_perm)){
+		if (!$topic_perm['can_delete']){
+			die(_NOPERM);//when user,only article of user
+		}
+	}
+
 	if ( !empty( $_POST['ok'] ) ){
 
 		//check ticket
@@ -328,7 +452,7 @@ if( $op == 'delete' ){
 			die( _MD_EMPTYNODELETE );
 			exit();
 		}
-		// 関連記事削除
+		// Remove the related articles
 		$story->relation->queryUnlinkById($storyid);
 		$story->relation->queryDelete(1);
 		$story -> delete();
@@ -342,7 +466,7 @@ if( $op == 'delete' ){
 		exit();
 	}else{
 		require_once XOOPS_ROOT_PATH.'/header.php';
-		xoops_confirm( array( 'op' => 'delete', 'storyid' => $storyid, 'ok' => 1, 'return' => $return, 'XOOPS_G_TICKET'=>$xoopsGTicket->issue( __LINE__ ) ), 'index.php?page=submit', _MD_RUSUREDEL );
+		xoops_confirm( array( 'op' => 'delete', 'storyid' => $storyid, 'ok' => 1, 'return' => $return, 'XOOPS_G_TICKET'=>$xoopsGTicket->issue( __LINE__ ) ), 'index.php?page=submit', $story->getVar('title').'<br/><br/>'._MD_RUSUREDEL );
 		require_once XOOPS_ROOT_PATH.'/footer.php';
 	}
 }

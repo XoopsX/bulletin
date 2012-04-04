@@ -110,21 +110,22 @@ define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYCAP', '新規カテゴリが作成�
 define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYDSC', '新規カテゴリが作成された場合に通知する');
 define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規カテゴリが作成されました');
 
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFY', '新規ニュース記事投稿');       
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYCAP', '新規ニュースの投稿があった場合に通知する');                           
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYDSC', '新規ニュースの投稿があった場合に通知する');                
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースの投稿がありました');                              
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFY', '新規ニュース投稿承認待ち');
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYCAP', '新規承認待ちニュースの投稿があった場合に通知する');
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYDSC', '新規承認待ちニュースの投稿があった場合に通知する');
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規承認待ちニュースの投稿がありました');
 
-define($constpref.'_GLOBAL_NEWSTORY_NOTIFY', '新規ニュース記事掲載');       
+define($constpref.'_GLOBAL_NEWSTORY_NOTIFY', '新規ニュース記事掲載');
 define($constpref.'_GLOBAL_NEWSTORY_NOTIFYCAP', '新規ニュース記事が掲載された場合に通知する');
 define($constpref.'_GLOBAL_NEWSTORY_NOTIFYDSC', '新規ニュース記事が掲載された場合に通知する');
-define($constpref.'_GLOBAL_NEWSTORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースが掲載されました');                              
+define($constpref.'_GLOBAL_NEWSTORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースが掲載されました');
 
 define($constpref.'_STORY_APPROVE_NOTIFY', 'ニュース記事の承認');
 define($constpref.'_STORY_APPROVE_NOTIFYCAP', 'このニュース記事が承認された場合に通知する');
 define($constpref.'_STORY_APPROVE_NOTIFYDSC', 'このニュース記事が承認された場合に通知する');
 define($constpref.'_STORY_APPROVE_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: ニュース記事が承認されました');
 
+// added 2.01
 define($constpref.'_NOTIFY5_TITLE', '新規コメント投稿');
 define($constpref.'_NOTIFY5_CAPTION', 'この記事にコメントがついた場合通知する');
 define($constpref.'_NOTIFY5_DESC', 'この記事にコメントがついた場合通知する');
