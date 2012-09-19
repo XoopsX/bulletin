@@ -20,12 +20,26 @@
      <p><input type="text" name="title" value="<{$title}>" size="50" maxlength="80" /></p>
      <h3><{$smarty.const._MD_THESCOOP}></h3>
      <div id="area_dhtmltarea">
-          <label>
-		  <input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" />
-          <{$smarty.const._MD_INPUTHELPER}>
-          </label>
-          <br />
-          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;width: 95%; height: auto;" post_style="display:none;width: 95%; height: auto;"}>
+		<{if $smarty.const.LEGACY_BASE_VERSION|version_compare:'2.2':'>=' && (!$common_fck_installed || !$use_fckeditor)}>
+			<{if $use_html && ($html || !$text)}>
+				<{assign var=editor value=html}>
+			<{else}>
+				<{assign var=editor value=bbcode}>
+			<{/if}>
+			<{xoops_dhtmltarea class=$editor name=text cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text|htmlspecialchars_decode:$smarty.const.ENT_QUOTES editor=$editor}>
+			<{if !$text && $editor == 'html' && $legacy_module != 'legacy'}>
+				<{assign var=html value=1}>
+				<{assign var=br value=0}>
+				<{assign var=xcode value=0}>
+			<{/if}>
+		<{else}>
+	          <label>
+			  <input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" />
+	          <{$smarty.const._MD_INPUTHELPER}>
+	          </label>
+	          <br />
+	          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;width: 95%; height: auto;" post_style="display:none;width: 95%; height: auto;"}>
+     	<{/if}>
      </div>
      <{if $use_fckeditor && $common_fck_installed}>
           <div id="area_fckxoops">
