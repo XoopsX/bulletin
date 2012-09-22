@@ -26,7 +26,7 @@
 			<{else}>
 				<{assign var=editor value=bbcode}>
 			<{/if}>
-			<{xoops_dhtmltarea class=$editor name=text cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text|htmlspecialchars_decode:$smarty.const.ENT_QUOTES editor=$editor}>
+			<{xoopsdhtmltarea class=$editor name=text cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text editor=$editor}>
 			<{if !$text && $editor == 'html' && $legacy_module != 'legacy'}>
 				<{assign var=html value=1}>
 				<{assign var=br value=0}>
