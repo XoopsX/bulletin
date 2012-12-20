@@ -69,7 +69,7 @@
 
 	<div class="jquery-ui-accordion-title"><{$smarty.const._MD_TOPIC}></div>
     <div class="jquery-ui-accordion-contents">
-      <{if $storyid}>
+      <{if $storyid && !$use_approve}>
       	<input type="hidden" name="topicid" value="<{$topicid}>"/>
       	<{$topic_title}>
 	  <{else}>
