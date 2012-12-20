@@ -42,7 +42,7 @@ if ( $storyid ){
 }
 // In case of No Topic
 $BTopic = new BulletinTopic( $mydirname, $topicid );
-$topicid = $BTopic->getTopicIdByPermissionCheck($topicid);
+// $topicid = $BTopic->getTopicIdByPermissionCheck($topicid); // comment out by nao-pon
 if( $topicid ){
 	$story->setVar('topicid', $topicid);
 }
