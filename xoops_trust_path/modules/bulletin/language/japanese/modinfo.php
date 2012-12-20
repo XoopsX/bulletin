@@ -93,11 +93,6 @@ define($constpref.'_COM_VIEW','コメント統合の表示方法');
 define($constpref.'_COM_ORDER','コメント統合の表示順序');
 define($constpref.'_COM_POSTSNUM','コメント統合のフラット表示における最大表示件数');
 
-// by yoshis
-define( $constpref.'_ADMENU_CATEGORYACCESS' , 'カテゴリーアクセス権限' ) ;
-define($constpref.'_IMAGES_DIR','イメージファイルディレクトリ');
-define($constpref.'_IMAGES_DIRDSC','このモジュール用のイメージが格納されたディレクトリをモジュールディレクトリからの相対パスで指定します。デフォルトはimagesです。');
-
 // Text for notifications
 define($constpref.'_GLOBAL_NOTIFY', 'モジュール全体');
 define($constpref.'_GLOBAL_NOTIFYDSC', 'ニュースモジュール全体における通知オプション');
@@ -110,22 +105,21 @@ define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYCAP', '新規カテゴリが作成された場合
 define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYDSC', '新規カテゴリが作成された場合に通知する');
 define($constpref.'_GLOBAL_NEWCATEGORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規カテゴリが作成されました');
 
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFY', '新規ニュース投稿承認待ち');
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYCAP', '新規承認待ちニュースの投稿があった場合に通知する');
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYDSC', '新規承認待ちニュースの投稿があった場合に通知する');
-define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規承認待ちニュースの投稿がありました');
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFY', '新規ニュース記事投稿');       
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYCAP', '新規ニュースの投稿があった場合に通知する');                           
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYDSC', '新規ニュースの投稿があった場合に通知する');                
+define($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースの投稿がありました');                              
 
-define($constpref.'_GLOBAL_NEWSTORY_NOTIFY', '新規ニュース記事掲載');
+define($constpref.'_GLOBAL_NEWSTORY_NOTIFY', '新規ニュース記事掲載');       
 define($constpref.'_GLOBAL_NEWSTORY_NOTIFYCAP', '新規ニュース記事が掲載された場合に通知する');
 define($constpref.'_GLOBAL_NEWSTORY_NOTIFYDSC', '新規ニュース記事が掲載された場合に通知する');
-define($constpref.'_GLOBAL_NEWSTORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースが掲載されました');
+define($constpref.'_GLOBAL_NEWSTORY_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: 新規ニュースが掲載されました');                              
 
 define($constpref.'_STORY_APPROVE_NOTIFY', 'ニュース記事の承認');
 define($constpref.'_STORY_APPROVE_NOTIFYCAP', 'このニュース記事が承認された場合に通知する');
 define($constpref.'_STORY_APPROVE_NOTIFYDSC', 'このニュース記事が承認された場合に通知する');
 define($constpref.'_STORY_APPROVE_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE}: ニュース記事が承認されました');
 
-// added 2.01
 define($constpref.'_NOTIFY5_TITLE', '新規コメント投稿');
 define($constpref.'_NOTIFY5_CAPTION', 'この記事にコメントがついた場合通知する');
 define($constpref.'_NOTIFY5_DESC', 'この記事にコメントがついた場合通知する');

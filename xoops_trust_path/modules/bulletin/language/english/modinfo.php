@@ -93,11 +93,6 @@ define($constpref.'_COM_VIEW','View of comment-integration');
 define($constpref.'_COM_ORDER','Order of comment-integration');
 define($constpref.'_COM_POSTSNUM','Max posts displayed in comment-integration');
 
-// by yoshis
-define($constpref.'_ADMENU_CATEGORYACCESS' , 'Permissions of Categories' ) ;
-define($constpref.'_IMAGES_DIR','Directory for image files');
-define($constpref.'_IMAGES_DIRDSC','relative path should be set in the module directory. default: images');
-
 // Text for notifications
 define($constpref."_GLOBAL_NOTIFY","Global");
 define($constpref."_GLOBAL_NOTIFYDSC","Global news notification options.");
@@ -110,12 +105,12 @@ define($constpref."_GLOBAL_NEWCATEGORY_NOTIFYCAP","Notify me when a new category
 define($constpref."_GLOBAL_NEWCATEGORY_NOTIFYDSC","Notify me when a new category is created.");
 define($constpref."_GLOBAL_NEWCATEGORY_NOTIFYSBJ","[{X_SITENAME}] {X_MODULE}: New category created");
 
-define($constpref."_GLOBAL_STORYSUBMIT_NOTIFY","New story submitted(awaiting approval)");
-define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYCAP","Notify me when a new story is submitted(awaiting approval).");
-define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYDSC","Notify me when a new story is submitted(awaiting approval).");
-define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYSBJ","[{X_SITENAME}] {X_MODULE}: New story submitted(awaiting approval)");
+define($constpref."_GLOBAL_STORYSUBMIT_NOTIFY","New story submitted");       
+define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYCAP","Notify me when a new story is submitted.");                           
+define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYDSC","Notify me when a new story is submitted.");                
+define($constpref."_GLOBAL_STORYSUBMIT_NOTIFYSBJ","[{X_SITENAME}] {X_MODULE}: New story submitted");                      
 
-define($constpref."_GLOBAL_NEWSTORY_NOTIFY","New story published");
+define($constpref."_GLOBAL_NEWSTORY_NOTIFY","New story published");       
 define($constpref."_GLOBAL_NEWSTORY_NOTIFYCAP","Notify me when a new story is published.");
 define($constpref."_GLOBAL_NEWSTORY_NOTIFYDSC","Notify me when a new story is published.");
 define($constpref."_GLOBAL_NEWSTORY_NOTIFYSBJ","[{X_SITENAME}] {X_MODULE}: New news published");

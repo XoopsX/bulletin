@@ -8,40 +8,46 @@
 <br />
 <{/if}>
 
-<h2><{$smarty.const._MD_SUBMITNEWS}></h2>
-
 <form name="storyform" id="storyform" action="?page=submit" method="post" onsubmit="return xoopsFormValidate_storyform();">
-<{$gticket}>
-<{if $storyid}><input type="hidden" name="storyid" value="<{$storyid}>"/><{/if}>
-<{if $return}><input type="hidden" name="return" value="<{$return}>"/><{/if}>
-<div align="left">
-	<{* <{$smarty.const._MD_POSTEDBY}><{$poster}> *}>
-     <h3><{$smarty.const._MD_TITLE}></h3>
-     <p><input type="text" name="title" value="<{$title}>" size="50" maxlength="80" /></p>
-     <h3><{$smarty.const._MD_THESCOOP}></h3>
-     <div id="area_dhtmltarea">
-		<{if $smarty.const.LEGACY_BASE_VERSION|version_compare:'2.2':'>=' && (!$common_fck_installed || !$use_fckeditor)}>
-			<{if $use_html && ($html || !$text)}>
-				<{assign var=editor value=html}>
-			<{else}>
-				<{assign var=editor value=bbcode}>
-			<{/if}>
-			<{xoops_dhtmltarea class=$editor name=text cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text|htmlspecialchars_decode:$smarty.const.ENT_QUOTES editor=$editor}>
-			<{if !$text && $editor == 'html' && $legacy_module != 'legacy'}>
-				<{assign var=html value=1}>
-				<{assign var=br value=0}>
-				<{assign var=xcode value=0}>
-			<{/if}>
-		<{else}>
-	          <label>
-			  <input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" />
-	          <{$smarty.const._MD_INPUTHELPER}>
-	          </label>
-	          <br />
-	          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;width: 95%; height: auto;" post_style="display:none;width: 95%; height: auto;"}>
-     	<{/if}>
-     </div>
-     <{if $use_fckeditor && $common_fck_installed}>
+  <{$gticket}>
+  <{if $storyid}><input type="hidden" name="storyid" value="<{$storyid}>"/><{/if}>
+  <{if $return}><input type="hidden" name="return" value="<{$return}>"/><{/if}>
+  <table class="outer" cellspacing="1" width="100%">
+    <tr><th colspan="2"><{$smarty.const._MD_SUBMITNEWS}></th></tr>
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._MD_POSTEDBY}></td>
+      <td class="even"><{$poster}></td>
+    </tr>
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._MD_TITLE}></td>
+      <td class="even"><input type="text" name="title" value="<{$title}>" size="50" maxlength="80" /></td>
+    </tr>
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._MD_TOPIC}></td>
+      <td class="even"><{$topic_selbox}></td>
+    </tr>
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._MD_TOPIC_IMAGE}></td>
+      <td class="even">
+        <select name="topicimg">
+          <option value="1"<{if $topicimg==1}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_RIGHT}></option>
+          <option value="2"<{if $topicimg==2}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_LEFT}></option>
+          <option value="0"<{if $topicimg==0}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_DISABLE}></option>
+        </select>
+      </td>
+    </tr>
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._MD_THESCOOP}></td>
+      <td class="even">
+        <{if $use_fckeditor}>
+          <label><input type="checkbox" name="using_fck" checked="checked" onclick="var td=xoopsGetElementById('area_dhtmltarea');var tf=xoopsGetElementById('area_fckxoops');if(this.checked){tf.style.display='block';td.style.display='none';}else{td.style.display='block';tf.style.display='none';};" /><{$smarty.const._MD_FCKXOOPS_ONOFF}></label>
+        <{/if}>
+        <div id="area_dhtmltarea">
+          <label><input type="checkbox" onclick="var pre=xoopsGetElementById('text_bbcode_buttons_pre');var post=xoopsGetElementById('text_bbcode_buttons_post');if(this.checked){pre.style.display='block';post.style.display='block'}else{pre.style.display='none';post.style.display='none'};" /><{$smarty.const._MD_INPUTHELPER}></label>
+          <br />
+          <{xoopsdhtmltarea name="text" cols=$bulletin_post_tray_col rows=$bulletin_post_tray_row value=$text pre_style="display:none;" post_style="display:none;"}>
+        </div>
+        <{if $use_fckeditor}>
           <div id="area_fckxoops">
             <script type="text/javascript" src="<{$xoops_url}>/common/fckeditor/fckeditor.js"></script>
             <script type="text/javascript">
@@ -57,56 +63,33 @@
               xoopsGetElementById('area_dhtmltarea').style.display='none';
             </script>
           </div>
-          <label>
-          <input type="checkbox" name="using_fck" checked="checked" onclick="var td=xoopsGetElementById('area_dhtmltarea');var tf=xoopsGetElementById('area_fckxoops');if(this.checked){tf.style.display='block';td.style.display='none';}else{td.style.display='block';tf.style.display='none';};" />
-          <{$smarty.const._MD_FCKXOOPS_ONOFF}>
-          </label>
-	<{/if}>
-    <div><{$smarty.const._MULTIPAGE}></div>
-</div>
-<div id="jquery-ui-accordion">
-  <div align="center">
-
-	<div class="jquery-ui-accordion-title"><{$smarty.const._MD_TOPIC}></div>
-    <div class="jquery-ui-accordion-contents">
-      <{if $storyid && !$use_approve}>
-      	<input type="hidden" name="topicid" value="<{$topicid}>"/>
-      	<{$topic_title}>
-	  <{else}>
-	    <{$topic_selbox}>
-	  <{/if}>&nbsp;
-	  <{$smarty.const._MD_TOPIC_IMAGE}>
-      <select name="topicimg">
-          <option value="1"<{if $topicimg==1}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_RIGHT}></option>
-          <option value="2"<{if $topicimg==2}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_LEFT}></option>
-          <option value="0"<{if $topicimg==0}> selected="selected"<{/if}>><{$smarty.const._MD_TOPIC_DISABLE}></option>
-      </select>
-	</div>
-  <{*
-  <input type="hidden" name="topicid" value="<{$topic_selbox2}>">
-  <input type="hidden" name="topicimg" value="0">
-  *}>
+        <{/if}>
+        <div><{$smarty.const._MULTIPAGE}></div>
+      </td>
+    </tr>
     <{if $can_use_date}>
-      <div class="jquery-ui-accordion-title"><{$smarty.const._MD_PUBLISHED}></div>
-      <div class="jquery-ui-accordion-contents">
+      <tr align="left" valign="top">
+        <td class="head"><{$smarty.const._MD_PUBLISHED}></td>
+        <td class="even">
           <label><input type="checkbox" value="1" name="autodate" <{if $autodate}>checked="checked"<{/if}> /><{$smarty.const._MD_SETDATETIME}></label>&nbsp;
           <span style="font-size:0.8em;"><{$smarty.const._MD_SETDATETIME_DESC}></span><br />
           <{$post_date_selector}>
- 	  </div>
-      <div class="jquery-ui-accordion-title"><{$smarty.const._MD_EXPIRED}></div>
-      <div class="jquery-ui-accordion-contents">
+        </td>
+      </tr>
+      <tr align="left" valign="top">
+        <td class="head"><{$smarty.const._MD_EXPIRED}></td>
+        <td class="even">
           <label><input type="checkbox" value="1" name="autoexpdate" <{if $autoexpdate}>checked="checked"<{/if}> /><{$smarty.const._MD_SETEXPDATETIME}></label>&nbsp;
           <span style="font-size:0.8em;"><{$smarty.const._MD_SETEXPDATETIME_DESC}></span><br />
           <{$expire_date_selector}>
-	  </div>
+        </td>
+      </tr>
     <{/if}>
-
     <{if $use_relation}>
-      <div class="jquery-ui-accordion-title">
-        <{$smarty.const._MD_RELATION}>
-      </div>
-      <div class="jquery-ui-accordion-contents">
-        <div id="relation">
+      <tr align="left" valign="top">
+        <td class="head"><{$smarty.const._MD_RELATION}></td>
+        <td class="even">
+          <div id="relation">
           <{foreach item=i from=$relations}>
             <input type="checkbox" name="storyidR[]" value="<{$i.linkedid}>" />
             <input type="hidden" name="titleR[]" value="<{$i.title}>" />
@@ -114,16 +97,15 @@
             <input type="hidden" name="storyidRH[]" value="<{$i.linkedid}>" />
             <{$i.title}><br />
           <{/foreach}>
-        </div>
-        <input type="button" value="<{$smarty.const._MD_ADD_RELATION}>" name="opensub" onclick="window.open('index.php?page=search','sub','width=400,height=500');">
-        <input type="button" value="<{$smarty.const._DELETE}>" name="updatevar" onclick="updateRelations('storyform', false)">
-      </div>
+          </div>
+          <input type="button" value="<{$smarty.const._MD_ADD_RELATION}>" name="opensub" onclick="window.open('index.php?page=search','sub','width=400,height=500');">
+          <input type="button" value="<{$smarty.const._DELETE}>" name="updatevar" onclick="updateRelations('storyform', false)">
+        </td>
+      </tr>
     <{/if}>
-      <div class="jquery-ui-accordion-title">
-        <{$smarty.const._OPTIONS}>
-      </div>
-      <div class="jquery-ui-accordion-contents">
-        <div align="left">
+    <tr align="left" valign="top">
+      <td class="head"><{$smarty.const._OPTIONS}></td>
+      <td class="even">
         <{if $use_notify}>
           <label><input type="checkbox" value="1" name="notifypub" <{if $notifypub}>checked="checked"<{/if}> /><{$smarty.const._MD_NOTIFYPUBLISH}></label><br />
         <{/if}>
@@ -138,16 +120,17 @@
         <{if $use_approve}>
           <label><input type="checkbox" value="1" name="approve" <{if $approve}>checked="checked"<{/if}> /><{$smarty.const._MD_APPROVE}></label><br />
         <{/if}>
-        </div>
-      </div>
-  </div>
-</div>
-<input class="formButton" name="preview" id="preview" value="<{$smarty.const._PREVIEW}>" type="submit" />&nbsp;
-<input class="formButton" name="post" id="post" value="<{$smarty.const._MD_POST}>" type="submit" />
+      </td>
+    </tr>
+    <tr align="left" valign="top">
+      <td class="head">&nbsp;</td>
+      <td class="even">
+        <input class="formButton" name="preview" id="preview" value="<{$smarty.const._PREVIEW}>" type="submit" />&nbsp;
+        <input class="formButton" name="post" id="post" value="<{$smarty.const._MD_POST}>" type="submit" />
+      </td>
+    </tr>
+  </table>
 </form>
-
-
-
 
 <!-- Start Form Vaidation JavaScript //-->
 <script type="text/javascript">

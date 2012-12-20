@@ -39,7 +39,7 @@ define('_AM_WAITING_ARTICLES','承認待ちのニュース記事');
 define('_AM_ARTICLE_ADMIN','ニュース記事の管理');
 define('_AM_NOSUBJECT','題名なし');
 define('_AM_RIGHT_TO_POST','投稿を許可');
-define('_AM_RIGHT_TO_APPROVE','承認を許可');
+define('_AM_RIGHT_TO_APPROVE','掲載を自動承認');
 define('_AM_RIGHT_TO_CHOSE_DATE','掲載日時設定');
 define('_AM_RIGHT_HTML','HTMLの使用');
 define('_AM_RIGHT_XCODE','XOOPSコードの使用');
@@ -63,23 +63,5 @@ define('_AM_CREDIT','Bulletin(xoops.suinyeze.com)');
 // It is able to change a following line into the TRANSLATER's name and website. Follow appears at admin page.
 define('_AM_TRANSLATER','Japanese patch(xoops.suinyeze.com)');
 // example : define('_AM_TRANSLATER','English patch(www.english-tranlater.com)');
-
-// Added by Bluemoon inc.
-// forum_access and category_access
-define('_MD_A_BULLETIN_LABEL_SELECTFORUM','フォーラムを選択');
-define('_MD_A_BULLETIN_LABEL_SELECTCATEGORY','カテゴリーを選択');
-define('_MD_A_BULLETIN_H2_GROUPPERMS','グループ毎の権限');
-define('_MD_A_BULLETIN_H2_USERPERMS','ユーザー毎の権限');
-define('_MD_A_BULLETIN_TH_CAN_READ','閲覧権限');
-define('_MD_A_BULLETIN_TH_CAN_POST','投稿権限');
-define('_MD_A_BULLETIN_TH_CAN_EDIT','編集権限');
-define('_MD_A_BULLETIN_TH_CAN_DELETE','削除権限');
-define('_MD_A_BULLETIN_TH_POST_AUTO_APPROVED','承認不要');
-define('_MD_A_BULLETIN_TH_UID','ユーザID');
-define('_MD_A_BULLETIN_TH_UNAME','ユーザ名');
-define('_MD_A_BULLETIN_TH_GROUPNAME','グループ名');
-define('_MD_A_BULLETIN_NOTICE_ADDUSERS','※ユーザを個別に新規追加する場合、ユーザID（数字）かユーザ名のいずれかを直接入力してください。<br />閲覧権限と投稿権限の両方を外せば、そのユーザはこのリストからも消えます。');
-define('_MD_A_BULLETIN_ERR_CREATECATEGORYFIRST','まずカテゴリーを作成してください');
-define('_MD_A_BULLETIN_ERR_CREATEFORUMFIRST','まずフォーラムを作成してください');
 
 ?>

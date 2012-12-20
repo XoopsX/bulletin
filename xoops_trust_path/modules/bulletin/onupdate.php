@@ -11,7 +11,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 	if( defined( 'XOOPS_CUBE_LEGACY' ) ) {
 		$isCube = true ;
 		$root =& XCube_Root::getSingleton();
-		$root->mDelegateManager->add( 'Legacy.Admin.Event.ModuleUpdate.' . ucfirst($mydirname) . '.Success', 'bulletin_message_append_onupdate' ) ;
+		$root->mDelegateManager->add("Module.Legacy.ModuleUpdate.Success", 'bulletin_message_append_onupdate') ;
 		$msgs = array() ;
 	} else {
 		$isCube = false ;
@@ -31,7 +31,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 		$sql = sprintf("SHOW TABLES LIKE '%s'", $xoopsDB->prefix("{$mydirname}_relation") );
 		list($result) = $xoopsDB->fetchRow($xoopsDB->query($sql));
 		if( empty($result) ){
-			$sql = "CREATE TABLE `".$xoopsDB->prefix("{$mydirname}_relation")."` (  `storyid` int(8) NOT NULL default '0',  `linkedid` int(8) NOT NULL default '0',  `dirname` varchar(25) NOT NULL default '') ENGINE=MyISAM;";
+			$sql = "CREATE TABLE `".$xoopsDB->prefix("{$mydirname}_relation")."` (  `storyid` int(8) NOT NULL default '0',  `linkedid` int(8) NOT NULL default '0',  `dirname` varchar(25) NOT NULL default '') TYPE=MyISAM;";
 			if( $xoopsDB->query($sql) ){
 				$msgs[] = '&nbsp;&nbsp;Table <b>'.htmlspecialchars($xoopsDB->prefix("{$mydirname}_relation")).'</b> created.';
 			}else{
@@ -82,115 +82,6 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 		$db->queryF( "ALTER TABLE ".$db->prefix($mydirname.'_topics')." ADD `topic_created` int(10) unsigned NOT NULL default 0, ADD `topic_modified` int(10) unsigned NOT NULL default 0, MODIFY `topic_imgurl` varchar(255) NOT NULL default '', MODIFY `topic_title` varchar(255) NOT NULL default ''" ) ;
 		$db->queryF( "ALTER TABLE ".$db->prefix($mydirname.'_stories')." MODIFY `uid` mediumint(8) unsigned NOT NULL default 0" ) ;
 		$db->queryF( "ALTER TABLE ".$db->prefix($mydirname.'_relation')." ADD KEY (`storyid`), ADD PRIMARY KEY (`storyid`,`linkedid`,`dirname`)" ) ;
-	}
-//ver2.22->ver3.0
-	$sql = sprintf("SHOW TABLES LIKE '%s'", $db->prefix("{$mydirname}_topic_access") );
-	list($result) = $db->fetchRow($db->query($sql));
-	if( empty($result) ){
-		$sql ="CREATE TABLE ".$db->prefix("{$mydirname}_topic_access")." (
-		topic_id smallint(5) unsigned NOT NULL default 0,
-		uid mediumint(8) default NULL,
-		groupid smallint(5) default NULL,
-		can_post tinyint(1) NOT NULL default 0,
-		can_edit tinyint(1) NOT NULL default 0,
-		can_delete tinyint(1) NOT NULL default 0,
-		post_auto_approved tinyint(1) NOT NULL default 0,
-		UNIQUE KEY (topic_id,uid),
-		UNIQUE KEY (topic_id,groupid),
-		KEY (topic_id),
-		KEY (uid),
-		KEY (groupid),
-		KEY (can_post)
-		) ENGINE=MyISAM;
-		";
-		if( $db->query($sql) ){
-			$msgs[] = '&nbsp;&nbsp;Table <b>'.htmlspecialchars($db->prefix("{$mydirname}_topic_access")).'</b> created.';
-		}else{
-			$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-		}
-//ver2.22->ver3.0  creat data to topic_access
-		$can_groups = array();
-		$can_read_topic_id = array();
-		$topic_access_data = "";
-		$sql = "SELECT gperm_groupid FROM ".$db->prefix('group_permission');
-		$sql .= " WHERE gperm_itemid = ".$mid;
-		$sql .= " AND gperm_modid = 1";
-		$sql .= " AND gperm_name = 'module_read'";
-		$result = $db->query($sql);
-		if (empty($result)){
-			$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-		}else{
-			while ($myrow = $db->fetchArray($result)) {
-				$can_groups[$myrow['gperm_groupid']]['can_read'] = 1;
-				$can_groups[$myrow['gperm_groupid']]['can_post'] = 0;
-				$can_groups[$myrow['gperm_groupid']]['can_edit'] = 0;
-				$can_groups[$myrow['gperm_groupid']]['can_delete'] = 0;
-				$can_groups[$myrow['gperm_groupid']]['post_auto_approved'] = 0;
-			}
-			if (!empty($can_groups)){
-				//ca_post,post_auto_approved
-				$sql = "SELECT * FROM ".$db->prefix('group_permission');
-				$sql .= " WHERE gperm_modid = ".$mid;
-				$sql .= " AND gperm_name = 'bulletin_permit'";
-				$result = $db->query($sql);
-				if (empty($result)){
-					$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-				}else{
-					while ($myrow = $db->fetchArray($result)) {
-						if(isset($can_groups[$myrow['gperm_groupid']])){
-							switch ($myrow['gperm_itemid']) {
-							case 1:
-								$can_groups[$myrow['gperm_groupid']]['can_post'] = 1;
-								break;
-							case 2:
-								$can_groups[$myrow['gperm_groupid']]['post_auto_approved'] = 1;
-								break;
-							}
-						}
-					}
-					$sql = "SELECT gperm_groupid FROM ".$db->prefix('group_permission');
-					$sql .= " WHERE gperm_itemid = ".$mid;
-					$sql .= " AND gperm_modid = 1";
-					$sql .= " AND gperm_name = 'module_admin'";
-					$result = $db->query($sql);
-					if (empty($result)){
-						$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-					}else{
-						while ($myrow = $db->fetchArray($result)) {
-							if(isset($can_groups[$myrow['gperm_groupid']])){
-								$can_groups[$myrow['gperm_groupid']]['can_post'] = 1;
-								$can_groups[$myrow['gperm_groupid']]['can_edit'] = 1;
-								$can_groups[$myrow['gperm_groupid']]['can_delete'] = 1;
-								$can_groups[$myrow['gperm_groupid']]['post_auto_approved'] = 1;
-							}
-						}
-						$sql = "SELECT topic_id FROM ".$db->prefix("{$mydirname}_topics");
-						$result = $db->query($sql);
-						if (empty($result)){
-							$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-						}else{
-							while ($myrow = $db->fetchArray($result)) {
-								$can_read_topic_id[] = $myrow['topic_id'];
-							}
-							if (!empty($can_read_topic_id)){
-								foreach ($can_read_topic_id as $topic_id) {
-									foreach ($can_groups as $groupid => $value) {
-										$sql = "INSERT INTO `".$db->prefix("{$mydirname}_topic_access")."`";
-										$sql .= " (`topic_id`, `uid`, `groupid`, `can_post`, `can_edit`, `can_delete`, `post_auto_approved`)";
-										$sql .= " VALUES (".$topic_id.", NULL, ".$groupid.", ".$value['can_post'].", ".$value['can_edit'].", ".$value['can_delete'].", ".$value['post_auto_approved'].")";
-										if ($db->query($sql)){
-											$msgs[] = '&nbsp;&nbsp;Table <b>'.htmlspecialchars($db->prefix("{$mydirname}_topic_access")).'</b> add '.$topic_id.' for group '.$groupid ;
-										}else{
-											$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">Invalid SQL <b>'.htmlspecialchars($sql).'</b></span>';
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	// TEMPLATES (all templates have been already removed by modulesadmin)
@@ -327,11 +218,11 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 	return true ;
 }
 
-function bulletin_message_append_onupdate( &$module_obj , &$log )
+function bulletin_message_append_onupdate( &$controller , &$eventArgs )
 {
 	if( is_array( @$GLOBALS['msgs'] ) ) {
 		foreach( $GLOBALS['msgs'] as $message ) {
-			$log->add( strip_tags( $message ) ) ;
+			$controller->mLog->add( $message ) ;
 		}
 	}
 }

@@ -12,18 +12,15 @@ $assing_array = array(
 	'mydirname' => $mydirname,
 	);
 
-$gperm =& BulletinGP::getInstance($mydirname) ;
-if (!empty($gperm->topicPermissions)){
-	$can_post_topics = $gperm->makeOnTopics('can_post');
-}else{
-	$can_post_topics = false;
-}
+//権限クラス
+$gperm = new BulletinGP;
+
 // User has the right to post.
-if($gperm->group_perm(1) && !empty($can_post_topics)){
+if($gperm->group_perm(1)){
 	$assing_array['can_post'] = 1;
 }
 
 // RSS Feed in <header>
-$rss_feed = '<link rel="alternate" type="application/rss+xml" title="RSS2.0" href="'.$mydirurl.'/index.php?page=rss" />';
+$rss_feed = '<link rel="alternate" type="application/rss+xml" title="RSS2.0" href="'.$mydirurl.'/index.php?page=rss" />'
 
 ?>

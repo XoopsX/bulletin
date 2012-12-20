@@ -1,11 +1,6 @@
 <?php
 // Blocks
 
-if( defined( "FOR_XOOPS_LANG_CHECKER" ) || ! defined( "_MB_BULLETIN_LOADED" ) ) {
-
-// a flag for this language file has already been read or not.
-define( "_MB_BULLETIN_LOADED" , 1 ) ;
-
 define('_MB_BULLETIN_NOTYET','本日のトップニュースはありません');
 define('_MB_BULLETIN_TMRSI','本日最も読まれたニュース記事は：');
 define('_MB_BULLETIN_ORDER','並び順');
@@ -35,6 +30,4 @@ define('_MB_BULLETIN_BYTESMORE','残り%s字');
 define('_MB_BULLETIN_NUMCOMMENTS','%sコメント');
 
 define('_MB_BULLETIN_MORE','もっと記事を見る');
-
-}
 ?>

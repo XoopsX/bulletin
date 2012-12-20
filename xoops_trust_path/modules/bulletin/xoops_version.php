@@ -10,7 +10,7 @@ $langman->read( 'modinfo.php' , $mydirname , $mytrustdirname , false ) ;
 $constpref = '_MI_' . strtoupper( $mydirname ) ;
 
 $modversion['name']        = constant($constpref.'_NAME');
-$modversion['version']     = 3.0; // Pack2011 Version
+$modversion['version']     = 2.22; // HD Version
 $modversion['description'] = constant($constpref.'_DESC');
 $modversion['credits']     = 'suin';
 $modversion['help']        = '';
@@ -18,7 +18,6 @@ $modversion['license']     = 'GPL see LICENSE';
 $modversion['official']    = 0;
 $modversion['image']       = file_exists( $mydirpath.'/module_icon.png' ) ? 'module_icon.png' : 'module_icon.php' ;
 $modversion['dirname']     = $mydirname;
-$modversion['trust_dirname'] = $mytrustdirname ;
 
 // Any tables can't be touched by modulesadmin.
 $modversion['sqlfile'] = false ;
@@ -45,8 +44,7 @@ $modversion['blocks'][$i]['file']        = "blocks.php";
 $modversion['blocks'][$i]['name']        = constant($constpref.'_BNAME2');
 $modversion['blocks'][$i]['description'] = constant($constpref.'_BDESC2');
 $modversion['blocks'][$i]['show_func']   = "b_bulletin_bigstory_show";
-$modversion['blocks'][$i]['edit_func']   = "b_bulletin_bigstory_edit";//ver3.0 added
-$modversion['blocks'][$i]['options']     = "$mydirname|0";//ver3.0 changed
+$modversion['blocks'][$i]['options']     = $mydirname;
 $modversion['blocks'][$i]['template']    = "{$mydirname}_block_bigstory.html";
 $i++;
 $modversion['blocks'][$i]['file']        = "blocks.php";
@@ -60,7 +58,7 @@ $modversion['blocks'][$i]['name']        = constant($constpref.'_BNAME4');
 $modversion['blocks'][$i]['description'] = constant($constpref.'_BDESC4');
 $modversion['blocks'][$i]['show_func']   = "b_bulletin_new_show";
 $modversion['blocks'][$i]['edit_func']   = "b_bulletin_new_edit";
-$modversion['blocks'][$i]['options']     = "$mydirname|published DESC|10|255|0|0";//ver3.0 changed
+$modversion['blocks'][$i]['options']     = "$mydirname|published DESC|10|255|0";
 $modversion['blocks'][$i]['template']    = "{$mydirname}_block_new.html";
 $modversion['blocks'][$i]['can_clone']   = true ;
 $i++;
@@ -69,7 +67,7 @@ $modversion['blocks'][$i]['name']        = constant($constpref.'_BNAME5');
 $modversion['blocks'][$i]['description'] = constant($constpref.'_BDESC5');
 $modversion['blocks'][$i]['show_func']   = "b_bulletin_category_new_show";
 $modversion['blocks'][$i]['edit_func']   = "b_bulletin_category_new_edit";
-$modversion['blocks'][$i]['options']     = "$mydirname|published DESC|5|255|0|0|0";//ver3.0 changed
+$modversion['blocks'][$i]['options']     = "$mydirname|published DESC|5|255|0|0|1";
 $modversion['blocks'][$i]['template']    = "{$mydirname}_block_category_new.html";
 $modversion['blocks'][$i]['can_clone']   = true ;
 $i++;
@@ -77,32 +75,22 @@ $modversion['blocks'][$i]['file']        = "blocks.php";
 $modversion['blocks'][$i]['name']        = constant($constpref.'_BNAME6');
 $modversion['blocks'][$i]['description'] = constant($constpref.'_BDESC6');
 $modversion['blocks'][$i]['show_func']   = "b_bulletin_recent_comments_show";
-$modversion['blocks'][$i]['edit_func']   = "b_bulletin_recent_comments_edit";//ver3.0 added
-$modversion['blocks'][$i]['options']     = "$mydirname|0";//ver3.0 changed
+$modversion['blocks'][$i]['options']     = $mydirname;
 $modversion['blocks'][$i]['template']    = "{$mydirname}_block_comments.html";
 
 // Menu
 $modversion['hasMain'] = 1;
 $modversion['read_any'] = true ; // nonsense for other than XCL2.1
-$modversion['sub'][1]['name'] = constant($constpref.'_SMNAME1');
+/*$modversion['sub'][1]['name'] = constant($constpref.'_SMNAME1');
 $modversion['sub'][1]['url']  = 'index.php?page=submit';
 $modversion['sub'][2]['name'] = constant($constpref.'_SMNAME2');
-$modversion['sub'][2]['url']  = 'index.php?page=archive';
+$modversion['sub'][2]['url']  = 'index.php?page=archive';*/ //GIJ
 
 // Submenu (just for mainmenu)
 $modversion['sub'] = array() ;
 if( is_object( @$GLOBALS['xoopsModule'] ) && $GLOBALS['xoopsModule']->getVar('dirname') == $mydirname ) {
 	require_once dirname(__FILE__).'/include/common_functions.php' ;
 	$modversion['sub'] = bulletin_get_submenu( $mydirname ) ;
-} else {
-	$_sub_menu_cache = XOOPS_TRUST_PATH . '/cache/'. urlencode(substr(XOOPS_URL, 7)) . '_' . $mydirname . '_' . (is_object(@$GLOBALS['xoopsUser'])? join('-', $GLOBALS['xoopsUser']->getGroups()):XOOPS_GROUP_ANONYMOUS)  . '_' . $GLOBALS['xoopsConfig']['language'] . '.submenu';
-	if (is_file($_sub_menu_cache) && time() - 3600 < filemtime($_sub_menu_cache)) {
-		$modversion['sub'] = unserialize(file_get_contents($_sub_menu_cache));
-	} else {
-		require_once dirname(__FILE__).'/include/common_functions.php' ;
-		$modversion['sub'] = bulletin_get_submenu( $mydirname ) ;
-		file_put_contents($_sub_menu_cache, serialize($modversion['sub']));
-	}
 }
 
 // Search
@@ -264,15 +252,6 @@ $modversion['config'][$i]['valuetype']   = 'int';
 $modversion['config'][$i]['default']     = 0;
 
 $modversion['config'][] = array(
-	'name'			=> 'images_dir' ,
-	'title'			=> $constpref.'_IMAGES_DIR' ,
-	'description'	=> $constpref.'_IMAGES_DIRDSC' ,
-	'formtype'		=> 'textbox' ,
-	'valuetype'		=> 'text' ,
-	'default'		=> 'images' ,
-	'options'		=> array()
-) ;
-$modversion['config'][] = array(
 	'name'			=> 'comment_dirname' ,
 	'title'			=> $constpref.'_COM_DIRNAME' ,
 	'description'	=> '' ,
@@ -350,7 +329,7 @@ $modversion['notification']['event'][1]['mail_subject']  = constant($constpref.'
 
 $modversion['notification']['event'][2]['name']          = 'story_submit';
 $modversion['notification']['event'][2]['category']      = 'global';
-//$modversion['notification']['event'][2]['admin_only']    = 1;//ver3.0beta3 changed
+$modversion['notification']['event'][2]['admin_only']    = 1;
 $modversion['notification']['event'][2]['title']         = constant($constpref.'_GLOBAL_STORYSUBMIT_NOTIFY');
 $modversion['notification']['event'][2]['caption']       = constant($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYCAP');
 $modversion['notification']['event'][2]['description']   = constant($constpref.'_GLOBAL_STORYSUBMIT_NOTIFYDSC');

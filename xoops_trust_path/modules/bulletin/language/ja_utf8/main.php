@@ -12,11 +12,10 @@ define('_MD_NUMCOMMENTS','%sコメント');
 //          submit.php          //
 define('_MD_SUBMITNEWS','ニュース投稿');
 define('_MD_TITLE','表題');
-define('_MD_TOP','トップ');
 define('_MD_TOPIC','カテゴリ');
 define('_MD_THESCOOP','メッセージ本文');
 define('_MD_INPUTHELPER','入力支援機能のON/OFF');
-define('_MD_FCKXOOPS_ONOFF','FCK EditorのON/OFF（エディタを切り替える際に編集した内容は保存されません）');
+define('_MD_FCKXOOPS_ONOFF','FCK EditorのON/OFF（一方のエディタでのテキスト変更は他方に反映されていない点に要注意）');
 define('_MD_ERROR_REQUIRED','{0}は必ず入力して下さい');
 define('_MD_NOTIFYPUBLISH','ニュースが承認された旨をメールで受け取る');
 define('_MD_POST','投稿する');
@@ -34,8 +33,8 @@ define('_MD_TOPIC_DISABLE','カテゴリアイコンを表示しない'); // ver
 define('_MD_TOPIC_LEFT','カテゴリアイコンを左側に表示する'); // ver 2.00 added
 define('_MD_TOPIC_RIGHT','カテゴリアイコンを右側に表示する'); // ver 2.00 added
 define('_MD_PUBINHOME','メインページに掲載する'); // ver 2.00 added
-define('_MD_PUBLISHED','掲載開始日時'); // ver 2.00 added
-define('_MD_EXPIRED','掲載終了日時'); // ver 2.00 added
+define('_MD_PUBLISHED','掲載日時'); // ver 2.00 added
+define('_MD_EXPIRED','掲載期限'); // ver 2.00 added
 define('_MD_SETDATETIME','掲載日時を設定する'); // ver 2.00 added
 define('_MD_SETDATETIME_DESC','*チェックをしないと掲載日時は現在の日時になります。'); // ver 2.00 added
 define('_MD_SETEXPDATETIME','掲載期限を設定する'); // ver 2.00 added
@@ -50,6 +49,7 @@ define('_MD_CHECKED_AS_RELATION','関連記事に追加'); // ver 2.00 added
 define('_MD_DISP_BLOCK','ブロックに掲載する'); // ver 2.00 added
 define('_MD_RUSUREDEL','このニュース記事および記事に対するコメントを全て削除してもいいですか？'); // ver 2.00 added
 define('_MD_EMPTYNODELETE', '削除できません'); // ver 2.00 added
+
 //          archive.php          //
 define('_MD_NEWSARCHIVES','ニュースアーカイブ');
 define('_MD_ARTICLES','ニュース');
@@ -85,11 +85,5 @@ define('_MD_THISCOMESFROM','%sにて更に多くのニュース記事をよむ�
 //          header.php          //
 define('_MD_RSS', 'RSS'); // ver 1.01 added
 define('_MD_ARCHIVES','アーカイブ'); // ver 2.00 added
-
-// added 3.0
-define('_MD_BULLETIN_CATEGORY','カテゴリー');
-define('_MD_BULLETIN_MSG_UPDATED','更新しました');
-//mailto
-define('_MD_MAILTO_ENCODING','UTF-8');
 
 ?>

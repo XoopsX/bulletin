@@ -13,7 +13,7 @@ function bulletin_onuninstall_base( $module , $mydirname )
 	if( defined('XOOPS_CUBE_LEGACY')) {
 		$isCube = true ;
 		$root =& XCube_Root::getSingleton();
-		$root->mDelegateManager->add( 'Legacy.Admin.Event.ModuleUninstall.' . ucfirst($mydirname) . '.Success' , 'bulletin_message_append_onuninstall' ) ;
+		$root->mDelegateManager->add("Module.Legacy.ModuleUninstall.Success", 'bulletin_message_append_onuninstall') ;
 		$ret = array() ;
 	} else {
 		$isCube = false ;
@@ -61,15 +61,13 @@ function bulletin_onuninstall_base( $module , $mydirname )
 	return true ;
 }
 
-function bulletin_message_append_onuninstall( &$module_obj , &$log )
+function bulletin_message_append_onuninstall( &$controller , &$eventArgs )
 {
 	if( is_array( @$GLOBALS['ret'] ) ) {
 		foreach( $GLOBALS['ret'] as $message ) {
-			$log->add( strip_tags( $message ) ) ;
+			$controller->mLog->add( $message ) ;
 		}
 	}
-
-	// use mLog->addWarning() or mLog->addError() if necessary
 }
 
 ?>

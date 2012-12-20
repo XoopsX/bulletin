@@ -5,10 +5,7 @@ A new story has been submitted at {X_SITENAME} and is awaiting approval.
 Story subject: {STORY_NAME}
 
 You can view this story submission here:
-
 {WAITINGSTORIES_URL}
-
-{ADMIN_WAITINGSTORIES_URL}
 
 -----------
 
@@ -20,7 +17,7 @@ If you wish not to receive further notifications, visit the link below:
 Please do not reply to this message.
 
 -----------
-{X_SITENAME} ({X_SITEURL})
+{X_SITENAME} ({X_SITEURL}) 
 WEBMASTER
 {X_ADMINMAIL}
 -----------

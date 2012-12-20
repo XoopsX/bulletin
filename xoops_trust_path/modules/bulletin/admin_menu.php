@@ -11,10 +11,6 @@ $adminmenu = array(
 		'link' => 'admin/index.php?op=topicsmanager' ,
 	) ,
 	array(
-		'title' => constant( $constpref.'_ADMENU_CATEGORYACCESS' ) ,
-		'link' => 'admin/index.php?page=category_access' ,
-	) ,	
-	array(
 		'title' => constant( $constpref.'_ADMENU4' ) ,
 		'link' => 'admin/index.php?op=permition' ,
 	) ,
