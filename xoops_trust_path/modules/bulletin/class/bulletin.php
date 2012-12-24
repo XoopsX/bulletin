@@ -12,6 +12,7 @@ class Bulletin extends XoopsObject{
 	var $relation ;
 	var $newstopic = null ;
 	var $table = '' ;
+	var $pagebreakRegex = '#(?:\[pagebreak\]|<(?:div).+?style.+?\bpage-break-after\b.+?</div>|(?:<(?:p|br\b[^>]*)>)?<!-- *pagebreak *-->(?:<(?:/p|br\b[^>]*)>)?)#';
 
 	// Constructor
 	function Bulletin( $mydirname , $id=null )
@@ -758,7 +759,7 @@ class Bulletin extends XoopsObject{
 	// to decompose $text into $bodytext and $hometext
 	function devideHomeTextAndBodyText()
 	{
-		$text_arr = explode('[pagebreak]', $this->getVar('text', 'n'));
+		$text_arr = preg_split($this->pagebreakRegex, $this->getVar('text', 'n'));
 		$this->setVar('hometext', array_shift($text_arr));
 		$this->setVar('bodytext', implode('[pagebreak]', $text_arr));
 	}
