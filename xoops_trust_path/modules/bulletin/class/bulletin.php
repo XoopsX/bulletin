@@ -12,7 +12,7 @@ class Bulletin extends XoopsObject{
 	var $relation ;
 	var $newstopic = null ;
 	var $table = '' ;
-	var $pagebreakRegex = '#(?:\[pagebreak\]|<(?:div).+?style.+?\bpage-break-after\b.+?</div>|(?:<(?:p|br\b[^>]*)>)?<!-- *pagebreak *-->(?:<(?:/p|br\b[^>]*)>)?)#';
+	var $pagebreakRegex = '#(?:\[pagebreak\]|<div[^>]+?style[^>]+?\bpage-break-after\b.+?</div>|(?:<(?:p|br\b[^>]*)>)?<!-- *pagebreak *-->(?:<(?:/p|br\b[^>]*)>)?)#';
 
 	// Constructor
 	function Bulletin( $mydirname , $id=null )
