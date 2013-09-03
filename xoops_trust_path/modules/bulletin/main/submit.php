@@ -127,6 +127,11 @@ if( $op == 'post' ){
 	if (!$gperm->group_perm(1)){
 		die(_NOPERM);
 	}
+	// check topicid
+	if ($topicid === 0){
+		$topicid = $topics[0];
+	}
+	$story->setVar('topicid', $topicid);
 	//category ca_post
 	if(!$gperm->proceed4topic("can_post",$topicid)){
 		die(_NOPERM);

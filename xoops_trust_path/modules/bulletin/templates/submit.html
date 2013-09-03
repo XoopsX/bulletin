@@ -153,6 +153,7 @@
   function xoopsFormValidate_storyform() {
     myform = window.document.storyform;
     if ( myform.title.value == "" ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TITLE:$smarty.const._MD_ERROR_REQUIRED}>"); myform.title.focus(); return false; }
+    if ( myform.topicid.selectedIndex == 0 ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TOPIC:$smarty.const._MD_ERROR_REQUIRED}>"); myform.topicid.focus(); return false; }
     return true;
   }
 </script>
