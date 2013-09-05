@@ -222,6 +222,8 @@ if( $storytopic ) {
 		if( $p4a['topic_id'] == $storytopic ) $breadcrumbs[] = array( 'name' => $p4a['topic_title'] ) ;
 		else $breadcrumbs[] = array( 'name' => $p4a['topic_title'] , 'url' => XOOPS_URL.'/modules/'.$mydirname.'/index.php?storytopic='.$p4a['topic_id'] ) ;
 	}
+	$xoopsTpl->assign( 'storytopic' , $storytopic ) ;
+	$xoopsTpl->assign( 'storytopic_title' , $p4a['topic_title'] ) ;
 }
 $xoopsTpl->assign( 'xoops_breadcrumbs' , $breadcrumbs ) ;
 $xoopsTpl->assign( 'mod_config' , $xoopsModuleConfig ) ;

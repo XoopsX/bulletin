@@ -14,16 +14,19 @@ class BulletinTopic extends XoopsTopic{
 
 		if ( is_array($topicid) ) {
 			$this->makeTopic($topicid);
-		} elseif ( $topicid != 0 ) {
+		} elseif ( $topicid != 0 && $this->BTtopicExists($topicid)) {
 			$this->getTopic(intval($topicid));
 		} else {
 			$this->topic_id = $topicid;
 		}
 	}
 
-	function topicExists()
+	function BTtopicExists($topic_id = NULL)
 	{
 		$sql = "SELECT COUNT(*) from ".$this->table;
+		if (is_numeric($topic_id)) {
+			$sql .= ' WHERE topic_id='.(int)$topic_id;
+		}
 		$result = $this->db->query($sql);
 		list($count) = $this->db->fetchRow($result);
 		if ($count > 0) {
@@ -104,51 +107,75 @@ class BulletinTopic extends XoopsTopic{
 		//$ret = str_replace('topic_id','topicid', $ret); // non-sense code?
 		return $ret;
 	}
-	// Bluemoon
-	function makeMyTopicList($preset_id=0, $row=NULL){
-		$this->id = "topic_id";
-		$this->pid = "topic_pid";
-		$title = "topic_title";
-		$order = "topic_title";
-		$onchange = "";
-		$none = count($row);
-		$myts =& MyTextSanitizer::getInstance();
-		$ret = "<select name='topicid'";
-		if ( $onchange != "" ) {
-			$ret .= " onchange='".$onchange."'";
+	
+	/**
+	 * Make HTML select box of topic list
+	 * 
+	 * @param int    $preset_id
+	 * @param string $row
+	 * @return string
+	 */
+	function makeMyTopicList($preset_id=0, $row=NULL, $onchange='') {
+		$order = 'topic_title';
+		$none = (!$row || count($row) < 1);
+		$ret = '<select name="topicid"';
+		if ( $onchange != '' ) {
+			$ret .= ' onchange="'.$onchange.'"';
 		}
-		$ret .= ">\n";
-		$sql = "SELECT ".$this->id.",".$title." FROM ".$this->table;
-		if ( $order != "" ) {
-			$sql .= " ORDER BY $order";
-		}
-		$result = $this->db->query($sql);
+		$ret .= '>'."\n";
 		if ( $none ) {
-			$ret .= "<option value='0'>----</option>\n";
+			$ret .= '<option value="0">----</option>'."\n";
+		} else {
+			$ret .= $this->makeMyTopicOption($row, $preset_id, $order, 0, 0);
 		}
-		while ( list($catid, $name) = $this->db->fetchRow($result) ) {
-			if (is_array($row) && !in_array($catid,$row)) continue;
-			$sel = "";
-			if ( $catid == $preset_id ) {
-				$sel = " selected='selected'";
-			}
-			$ret .= "<option value='$catid'$sel>$name</option>\n";
-			$sel = "";
-		}
-		$ret .= "</select>\n";
+		$ret .= '</select>'."\n";
 		return $ret;
 	}
+	
+	/**
+	 * Make HTML option elements by tree
+	 * 
+	 * @param array  $row
+	 * @param int    $preset_id
+	 * @param string $order
+	 * @param int    $pid
+	 * @param int    $depth
+	 * @return string
+	 * @author nao-pon
+	 */
+	private function makeMyTopicOption($row, $preset_id, $order, $pid, $depth = 0) {
+		$myts = MyTextSanitizer::getInstance();
+		$ret = '';
+		$sql = "SELECT topic_id, topic_title FROM ".$this->table.' WHERE topic_pid='.$pid;
+		if ( $order ) {
+			$sql .= " ORDER BY $order";
+		}
+		if ($result = $this->db->query($sql)) {
+			$pref = $depth? str_repeat('--', $depth).' ' : '';
+			while ( list($catid, $name) = $this->db->fetchRow($result) ) {
+				if (is_array($row) && in_array($catid, $row)) {
+					$name = $myts->htmlSpecialChars($name);
+					$sel = ($catid == $preset_id)? ' selected="selected"' : '';
+					$ret .= "<option value=\"$catid\"$sel>$pref$name</option>\n";
+				}
+				$ret .= $this->makeMyTopicOption($row, $preset_id, $order, $catid, $depth + 1);
+			}
+		}
+		return $ret;
+	}
+	
 	/*
 	 * 2012-2-1 Add by Yoshis
 	*/
-	function getTopicIdByPermissionCheck($topic_id=0){
+	function getTopicIdByPermissionCheck($topic_id=0, $op = 'edit') {
 		global $xoopsUser ;
 	
 		$groups = $xoopsUser->getGroups();
 		$tbl = $this->db->prefix( $this->mydirname."_topic_access" );
 		$ret = NULL;
+		$can_sql = (strtolower($op) === 'edit')? 'can_post = 1 AND can_edit = 1' : 'can_post = 1';
 		foreach($groups as $key => $gid){
-			$sql =  "SELECT topic_id FROM " . $tbl . " WHERE topic_id = " .$topic_id. " AND groupid = " .$gid. " AND can_post = 1 AND can_edit = 1";
+			$sql =  "SELECT topic_id FROM " . $tbl . " WHERE topic_id = " .$topic_id. " AND groupid = " .$gid. " AND " .$can_sql;
 			$result = $this->db->query($sql);
 			if( list($catid) = $this->db->fetchRow($result) ) {
 				$ret = $catid;
@@ -157,7 +184,7 @@ class BulletinTopic extends XoopsTopic{
 		}
 		if (is_null($ret)){
 			foreach($groups as $key => $gid){
-				$sql =  "SELECT topic_id FROM " . $tbl . " WHERE groupid = " .$gid. " AND can_post = 1 AND can_edit = 1";
+				$sql =  "SELECT topic_id FROM " . $tbl . " WHERE groupid = " .$gid. " AND " .$can_sql;
 				$result = $this->db->query($sql);
 				if( list($catid) = $this->db->fetchRow($result) ) {
 					$ret = $catid;

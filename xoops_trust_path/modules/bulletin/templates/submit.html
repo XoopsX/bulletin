@@ -1,3 +1,6 @@
+<{if $error}>
+<{$error}>
+<{/if}>
 <{if $preview.title}>
 <table class="outer">
   <tbody>
@@ -24,7 +27,7 @@
     </tr>
     <tr align="left" valign="top">
       <td class="head"><{$smarty.const._MD_TOPIC}></td>
-      <td class="even"><{if $storyid && !$use_approve}><{$topic_title}><input type="hidden" name="topicid" value="<{$topicid}>"/><{else}><{$topic_selbox}><{/if}></td>
+      <td class="even"><{$topic_selbox}></td>
     </tr>
     <tr align="left" valign="top">
       <td class="head"><{$smarty.const._MD_TOPIC_IMAGE}></td>
@@ -152,8 +155,8 @@
 <script type="text/javascript">
   function xoopsFormValidate_storyform() {
     myform = window.document.storyform;
-    if ( myform.title.value == "" ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TITLE:$smarty.const._MD_ERROR_REQUIRED}>"); myform.title.focus(); return false; }
-    if ( myform.topicid.selectedIndex == 0 ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TOPIC:$smarty.const._MD_ERROR_REQUIRED}>"); myform.topicid.focus(); return false; }
+	if ( myform.title.value == "" ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TITLE:$smarty.const._MD_ERROR_REQUIRED}>"); myform.title.focus(); return false; }
+    if ( myform.topicid.options.item(myform.topicid.selectedIndex).value == 0 ) { window.alert("<{'{0}'|str_replace:$smarty.const._MD_TOPIC:$smarty.const._MD_ERROR_REQUIRED}>"); myform.topicid.focus(); return false; }
     return true;
   }
 </script>

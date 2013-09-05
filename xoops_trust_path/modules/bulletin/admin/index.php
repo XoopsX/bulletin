@@ -33,7 +33,7 @@ if ($op == 'preview' || $op == 'save') {
 // If there are no topics
 if( $op == 'form' ) {
 	$BTopic = new BulletinTopic( $mydirname );
-	if( !$BTopic->topicExists() ){
+	if( !$BTopic->BTtopicExists() ){
 		redirect_header('index.php?op=topicsmanager', 3, _AM_NO_TOPICS);
 		exit;
 	}
@@ -150,7 +150,7 @@ case 'topicsmanager':
 	foreach($topics_array as $v) {
 		$images[]['image'] = htmlspecialchars($v);
 	}
-	$topics_exists = ( $BTopic->topicExists() ) ? 1 : 0 ;
+	$topics_exists = ( $BTopic->BTtopicExists() ) ? 1 : 0 ;
 	//ob_start();
 	//$BTopic->makeTopicSelBox( 1, 0, 'topic_pid' );
 	//$topicselbox = ob_get_contents();

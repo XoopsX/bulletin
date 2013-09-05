@@ -5,6 +5,7 @@
     &nbsp;
 <{if $can_post}>
 |&nbsp;<a href="<{$mydirurl}>/index.php?page=submit" title="<{$smarty.const._MD_SUBMITNEWS}>"><{$smarty.const._MD_SUBMITNEWS}></a>
+<{if $storytopic}>&nbsp;[ <a href="<{$mydirurl}>/index.php?page=submit&amp;topicid=<{$storytopic}>" title="<{$smarty.const._MD_SUBMITNEWS}>"><{$storytopic_title}></a> ]<{/if}>
     &nbsp;
 <{/if}>
   <{if $disp_rss_link}>

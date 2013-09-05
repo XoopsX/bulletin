@@ -1,9 +1,17 @@
 <?php
+// Not have perm
+if (!$gperm->group_perm(1)) {
+	die(_NOPERM);
+	exit();
+}
+
 // Get Ctrl
 $op = isset($_POST['op']) ? trim($_POST['op']) : 'form';
 $op = isset($_GET['op']) && $_GET['op'] == 'delete' ? 'delete' : $op;
+
 // error log
 $errors = array();
+
 // Ticket function loading
 require_once dirname(dirname(__FILE__))."/include/gtickets.php";
 if ( !empty($_POST['preview']) ) {
@@ -28,30 +36,62 @@ $return = isset( $_POST['return'] ) ? intval($_POST['return']) : $return ;
 // In Case of Topic id
 $topicid = isset($_GET['topicid']) ? intval($_GET['topicid']) : 0;
 $topicid = isset($_POST['topicid']) ? intval($_POST['topicid']) : $topicid;
+
+// Get can post topics_id array
+$topics = $gperm->makeOnTopics($storyid? 'can_edit' : 'can_post');
+if (empty($topics)){
+	die(_NOPERM . ' ( No topics for post )');
+}
+
 /*
  * Data loading section
  */
 $story = new Bulletin( $mydirname , $storyid );
 
-if ( $storyid ){
-	$topicid = $story->getVar('topicid');
-	if( empty($topicid) ){
-		die(_MD_NO_TOPICS);
-		exit;
+// Get topicid from saved data
+$saved_topicid = 0;
+if ($storyid) {
+	$saved_topicid = $story->getVar('topicid');
+	if (! in_array($saved_topicid, $topics)) {
+		$saved_topicid = $topics[0];
+	}
+	if (! $topicid) {
+		$topicid = (int)$saved_topicid;
 	}
 }
+
 // In case of No Topic
 $BTopic = new BulletinTopic( $mydirname, $topicid );
-// $topicid = $BTopic->getTopicIdByPermissionCheck($topicid); // comment out by nao-pon
-if( $topicid ){
-	$story->setVar('topicid', $topicid);
-}
-if( !$BTopic->topicExists() ){
+
+// Check topic exists
+if( !$BTopic->BTtopicExists() ){
 	die(_MD_NO_TOPICS);
 	exit;
 }
 
+// fix topicid by perm
+$fixed_topicid = (int)$BTopic->getTopicIdByPermissionCheck($topicid, $storyid? 'edit' : 'post');
+if ($fixed_topicid !== $topicid) {
+	if ($topicid) {
+		$op = 'preview';
+		$errors['topicid'] = _MD_NO_TOPICS;
+	}
+	$topicid = $saved_topicid? $saved_topicid : $fixed_topicid;
+	$BTopic->getTopic($topicid);
+}
+
+// force set
+if (isset($_POST['topicid'])) {
+	$_POST['topicid'] = $topicid;
+}
+if (isset($_GET['topicid'])) {
+	$_GET['topicid'] = $topicid;
+}
+
 $xoopsTpl->assign('topic_title', $BTopic->topic_title());
+
+// topic id request
+if( isset( $_GET['topicid'] ) && $_SERVER['REQUEST_METHOD'] === 'GET') $story->setVar('topicid', $topicid);
 
 // Chanege the WSYWIG editor
 if( ! empty( $_REQUEST['using_fck'] ) ) {
@@ -123,15 +163,6 @@ if( empty( $storyid ) ){
 }
 
 if( $op == 'post' ){
-	//need can post of group premition
-	if (!$gperm->group_perm(1)){
-		die(_NOPERM);
-	}
-	// check topicid
-	if ($topicid === 0){
-		$topicid = $topics[0];
-	}
-	$story->setVar('topicid', $topicid);
 	//category ca_post
 	if(!$gperm->proceed4topic("can_post",$topicid)){
 		die(_NOPERM);
@@ -336,41 +367,49 @@ if( $op == 'preview' ){
 	$xoopsTpl->assign('preview', array('title' => $p_title, 'hometext' => $p_hometext));
 	$op = 'form';
 }
-if( $op == 'form' ){
-	// for post
-	if (!$gperm->group_perm(1)){
-		die(_NOPERM);
+if( $op === 'form' || $op === 'preview' ){
+	
+// 	//notice when no can_post access
+// 	$topics = $gperm->makeOnTopics("can_post");
+// 	if (empty($topics)){
+// 		die(_NOPERM);
+// 	}
+	
+// 	// for editing
+// 	if (! $topicid && $op === 'form' && $storyid ){
+// 		$topicid = $story->getVar('topicid');
+// 		if (! $BTopic->BTtopicExists($topicid)) {
+// 			// remove topic or etc.
+// 			$topicid = 0;
+// 		}
+// 	}
+	
+// 	if ($topicid==0){
+// 		$topicid = $topics[0];
+// 	}
+
+	if (! $gperm->proceed4topic("can_post",$topicid)){
+		die(_NOPERM . '(Post)');
 	}
-	//notice when no can_post access
-	$topics = $gperm->makeOnTopics("can_post");
-	if (empty($topics)){
-		die(_NOPERM);
-	}
-	if ($topicid==0){
-		$topicid = $topics[0];
-	}else{
-		$proceed = $gperm->proceed4topic("can_post",$topicid);
+	
+	//TODO edit access
+	if ( !empty( $storyid ) ){// for edit
+		$proceed = $gperm->proceed4topic("can_edit",$topicid);
 		if (!$proceed){
-			die(_NOPERM);
+			die(_NOPERM . '(Edit)');
 		}
-		//TODO edit access
-		if ( !empty( $storyid ) ){// for edit
-			$proceed = $gperm->proceed4topic("can_edit",$topicid);
-			if (!$proceed){
-				die(_NOPERM);
-			}
 
-			//TODO user only
-			//you can edit only your article
-			$topic_perm = $gperm->get_viewtopic_perm_of_current_user($story->getVar('topicid') , $story->getVar('uid'));
-			if (!empty($topic_perm)){
-				if (!$topic_perm['can_edit']){
-					die(_NOPERM);//when user,only article of user
-				}
+		//TODO user only
+		//you can edit only your article
+		$topic_perm = $gperm->get_viewtopic_perm_of_current_user($topicid , $story->getVar('uid'));
+		if (!empty($topic_perm)){
+			if (!$topic_perm['can_edit']){
+				die(_NOPERM . '(Is not your article.)');//when user,only article of user
 			}
-
 		}
+
 	}
+
 
 	$xoopsTpl->assign('topic_selbox', $BTopic->makeMyTopicList($topicid,$topics) );
 	//H.Onuma
@@ -403,7 +442,12 @@ if( $op == 'form' ){
 //	require_once sprintf('%s/modules/legacy/language/%s/main.php' ,XOOPS_ROOT_PATH, $xoopsConfig['language']);
 
 	require_once XOOPS_ROOT_PATH.'/header.php';
-	if( !empty($errors) ) xoops_error($errors);
+	if( !empty($errors) ) {
+		ob_start();
+		xoops_error($errors);
+		$xoopsTpl->assign('error', ob_get_contents());
+		ob_end_clean();
+	}
 	// require dirname(dirname(__FILE__)).'/include/storyform.inc.php';
 	require dirname(dirname(__FILE__)).'/include/storyform_templatevars.inc.php';
 	$xoopsTpl->assign( 'xoops_breadcrumbs' , array(
@@ -420,10 +464,7 @@ if( $op == 'delete' ){
 		die(_NOPERM);
 		exit();
 	}
-	//need can post of group premition
-	if (!$gperm->group_perm(1)){
-		die(_NOPERM);
-	}
+
 	//category can_delete
 	if(!$gperm->proceed4topic("can_delete",$topicid)){
 		die(_NOPERM);
@@ -431,7 +472,7 @@ if( $op == 'delete' ){
 
 	//TODO user only
 	//you can edit only your article
-	$topic_perm = $gperm->get_viewtopic_perm_of_current_user($story->getVar('topicid') , $story->getVar('uid'));
+	$topic_perm = $gperm->get_viewtopic_perm_of_current_user($topicid , $story->getVar('uid'));
 	if (!empty($topic_perm)){
 		if (!$topic_perm['can_delete']){
 			die(_NOPERM);//when user,only article of user
