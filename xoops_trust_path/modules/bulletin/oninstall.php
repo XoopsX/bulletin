@@ -123,7 +123,7 @@ function bulletin_oninstall_base( $module , $mydirname )
 			if( is_file( $file_path ) && substr( $file , -5 ) == '.html' ) {
 				$mtime = intval( @filemtime( $file_path ) ) ;
 				$tpl_file = $mydirname . '_' . $file;
-				$sql = "SELECT tpl_id FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file='".mysql_escape_string($tpl_file)."'";
+				$sql = "SELECT tpl_id FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file=".$db->quoteString($tpl_file);
 				list($tpl_id) = $db->fetchRow($db->query($sql));
 				$tpl_source = file_get_contents( $file_path );
 				if (!empty($tpl_id) && isset($tpl_source) && $tpl_source != '') {

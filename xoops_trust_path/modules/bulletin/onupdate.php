@@ -244,7 +244,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 				$mtime = intval( @filemtime( $file_path ) ) ;
 				$tpl_file = $mydirname . '_' . $file;
 				$tpl_source = file_get_contents( $file_path );
-				$sql = "SELECT tpl_id, tpl_refid FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file='".mysql_escape_string($tpl_file)."'";
+				$sql = "SELECT tpl_id, tpl_refid FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file=".$db->quoteString($tpl_file);
 				list($tpl_id, $block_id) = $db->fetchRow($db->query($sql));
 				if( empty($tpl_id) && empty($block_id)){
 					$blocks_info = $module->getInfo('blocks');
@@ -282,7 +282,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 									}
 								}
 							}
-							$sql = "UPDATE ".$db->prefix("newblocks")." SET template='".mysql_escape_string($tpl_file)."', last_modified=".time()." WHERE bid=".$block_id;
+							$sql = "UPDATE ".$db->prefix("newblocks")." SET template=".$db->quoteString($tpl_file).", last_modified=".time()." WHERE bid=".$block_id;
 							if( !$result = $db->query($sql) ) {
 								$msgs[] = '<span style="color:#ff0000;">ERROR: Could not insert template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the database.</span>';
 							}else{
@@ -297,7 +297,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 					if($count==0){
 						$sql = sprintf("INSERT INTO %s (tpl_id, tpl_source) VALUES (%u, %s)", $db->prefix('tplsource'), $tpl_id, $db->quoteString($tpl_source));
 					}else{
-						$sql = "UPDATE ".$db->prefix("tplsource")." SET tpl_source='".mysql_escape_string($tpl_source)."' WHERE tpl_id=".$tpl_id;
+						$sql = "UPDATE ".$db->prefix("tplsource")." SET tpl_source=".$db->quoteString($tpl_source)." WHERE tpl_id=".$tpl_id;
 					}
 					if( !$result = $db->query($sql) ) {
 						$msgs[] = '<span style="color:#ff0000;">ERROR: Could not insert template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the database.</span>';
@@ -312,7 +312,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 							$msgs[] = 'Template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> compiled.</span>';
 						}
 					}
-					$sql = "UPDATE ".$db->prefix("newblocks")." SET template='".mysql_escape_string($tpl_file)."', last_modified=".time()." WHERE bid=".$block_id;
+					$sql = "UPDATE ".$db->prefix("newblocks")." SET template=".$db->quoteString($tpl_file).", last_modified=".time()." WHERE bid=".$block_id;
 					if( !$result = $db->query($sql) ) {
 						$msgs[] = '<span style="color:#ff0000;">ERROR: Could not insert template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the database.</span>';
 					}else{
