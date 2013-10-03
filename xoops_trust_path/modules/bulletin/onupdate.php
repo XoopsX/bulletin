@@ -244,7 +244,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 				$mtime = intval( @filemtime( $file_path ) ) ;
 				$tpl_file = $mydirname . '_' . $file;
 				$tpl_source = file_get_contents( $file_path );
-				$sql = "SELECT tpl_id, tpl_refid FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file=".$db->quoteString($tpl_file);
+				$sql = "SELECT tpl_id, tpl_refid FROM ".$db->prefix('tplfile')." WHERE tpl_module='$mydirname' AND tpl_file=".$db->quoteString($tpl_file)." AND tpl_tplset='default' LIMIT 1";
 				list($tpl_id, $block_id) = $db->fetchRow($db->query($sql));
 				if( empty($tpl_id) && empty($block_id)){
 					$blocks_info = $module->getInfo('blocks');
@@ -267,7 +267,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 							$tplfile->setVar('tpl_file', $tpl_file, true);
 							$tplfile->setVar('tpl_type', 'block');
 							$tplfile->setVar('tpl_lastimported', 0);
-							$tplfile->setVar('tpl_lastmodified', time());
+							$tplfile->setVar('tpl_lastmodified', $mtime);
 							$tplfile->setVar('tpl_desc', '', true);
 							if (!$tplfile_handler->insert($tplfile)) {
 								$msgs[] = '&nbsp;&nbsp;<span style="color:#ff0000;">ERROR: Could not insert template <b>'.$tpl_file.'</b> to the database.</span>';
@@ -302,6 +302,8 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 					if( !$result = $db->query($sql) ) {
 						$msgs[] = '<span style="color:#ff0000;">ERROR: Could not insert template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the database.</span>';
 					} else {
+						$sql = "UPDATE ".$db->prefix("tplfile")." SET tpl_lastmodified=".$mtime." WHERE tpl_id=".$tpl_id;
+						$db->query($sql);
 						$msgs[] = 'Template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> added to the database. (ID: <b>'.$tpl_id.'</b>)';
 						// generate compiled file
 						include_once XOOPS_ROOT_PATH.'/class/xoopsblock.php';
@@ -314,9 +316,9 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 					}
 					$sql = "UPDATE ".$db->prefix("newblocks")." SET template=".$db->quoteString($tpl_file).", last_modified=".time()." WHERE bid=".$block_id;
 					if( !$result = $db->query($sql) ) {
-						$msgs[] = '<span style="color:#ff0000;">ERROR: Could not insert template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the database.</span>';
+						$msgs[] = '<span style="color:#ff0000;">ERROR: Could not set template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> to the `newblocks` table.</span>';
 					}else{
-						$msgs[] = 'Template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> added to the database. (ID: <b>'.$tpl_id.'</b>)';
+						$msgs[] = 'Template <b>'.htmlspecialchars($mydirname.'_'.$file).'</b> added to the `newblocks` table. (BID: <b>'.$block_id.'</b>)';
 					}
 				}
 			}
