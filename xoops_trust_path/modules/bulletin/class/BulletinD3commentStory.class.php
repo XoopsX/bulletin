@@ -10,7 +10,7 @@ class BulletinD3commentStory extends D3commentAbstract {
 function fetchSummary( $external_link_id )
 {
 	$db =& Database::getInstance() ;
-	$myts =& MyTextsanitizer::getInstance() ;
+	(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextsanitizer::getInstance() ;
 
 	$module_handler =& xoops_gethandler( 'module' ) ;
 	$module =& $module_handler->getByDirname( $this->mydirname ) ;

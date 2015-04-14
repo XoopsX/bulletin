@@ -522,7 +522,7 @@ class Bulletin extends XoopsObject{
 	// class method
 	function makeCategoryArrayForSelect( $mydirname , $pad_string = '--' )
 	{
-		$ts =& MyTextSanitizer::getInstance();
+		(method_exists('MyTextSanitizer', 'sGetInstance') and $ts =& MyTextSanitizer::sGetInstance()) || $ts =& MyTextSanitizer::getInstance();
 		$cat_tree = Bulletin::getTreeCategories();
 		$ret = array();
 		foreach($cat_tree as $cat){

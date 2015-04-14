@@ -18,7 +18,7 @@ require_once dirname(dirname(__FILE__)).'/class/bulletin.php';
 require_once dirname(dirname(__FILE__)).'/class/bulletinTopic.php';
 
 // Sanitizer
-$myts =& MyTextSanitizer::getInstance();
+(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 // Template
 $tpl = new XoopsTpl();
 // Determine the operation

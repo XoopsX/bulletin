@@ -2,7 +2,7 @@
 
 require_once XOOPS_ROOT_PATH.'/class/template.php';
 
-$myts =& MyTextSanitizer::getInstance();
+(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 
 if (function_exists('mb_http_output')) {
 	mb_http_output('pass');

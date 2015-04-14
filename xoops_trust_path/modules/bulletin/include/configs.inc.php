@@ -32,7 +32,7 @@
 	$table_comments = $xoopsDB->prefix( "xoopscomments" ) ;
 
 	// sanitizer
-	$myts =& MyTextSanitizer::getInstance();
+	(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 
 	require_once dirname(__FILE__).'/function.php' ;
 

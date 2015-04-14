@@ -33,7 +33,7 @@ class BulletinPreloadBase extends XCube_ActionFilter
 			return ;
 		}
 
-		$myts =& MyTextSanitizer::getInstance();
+		(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 		$articles = Bulletin::getAllPublished( $this->mydirname , 10 , 0 , 0 , 1 , true, true, true) ;//ver3.0 changed
 		foreach( $articles as $article ) {
 			$hometext = $article->getVar('hometext','n') ;

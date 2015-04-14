@@ -10,7 +10,7 @@ class BulletinTopic extends XoopsTopic{
 		$this->db =& Database::getInstance();
 		$this->mydirname = $mydirname ;
 		$this->table = $this->db->prefix( "{$mydirname}_topics" );
-		$this->ts =& MyTextSanitizer::getInstance();
+		(method_exists('MyTextSanitizer', 'sGetInstance') and $this->ts =& MyTextSanitizer::sGetInstance()) || $this->ts =& MyTextSanitizer::getInstance();
 
 		if ( is_array($topicid) ) {
 			$this->makeTopic($topicid);
@@ -224,7 +224,7 @@ class BulletinTopic extends XoopsTopic{
 //			$uid = intval( $xoopsUser->getVar('uid') ) ;
 //		}
 //		$this->id = "topic_id";
-//		$myts =& MyTextSanitizer::getInstance();
+//		(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 //		$from1 = $this->db->prefix( "groups_users_link" );
 //		$from2 = $this->db->prefix( "bulletin_topic_access" );
 //		$sql = "SELECT ".$this->id." FROM ".$from1." LEFT JOIN ".$from2." ON ".$from1.".groupid = ".$from2.".groupid WHERE ".$from1.".uid = ".$uid." ORDER BY ".$this->id;

@@ -16,7 +16,7 @@ if ( ! function_exists('bulletin_whatsnew_base') ) {
 		$db =& Database::getInstance() ;
 		$categories = empty($category_option) ? 0 : array_map( 'intval' , explode( ',' , $category_option ) ) ;//(0=show all)
 
-		$myts =& MyTextSanitizer::getInstance();
+		(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 
 		require_once dirname(dirname(__FILE__)).'/class/bulletingp.php' ;
 

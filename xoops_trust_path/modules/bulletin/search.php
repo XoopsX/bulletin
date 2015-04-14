@@ -43,7 +43,7 @@ function bulletin_search_base( $mydirname , $queryarray , $andor , $limit , $off
 	$ret = array();
 	$i = 0;
 
-	$myts =& MyTextSanitizer::getInstance();
+	(method_exists('MyTextSanitizer', 'sGetInstance') and $myts =& MyTextSanitizer::sGetInstance()) || $myts =& MyTextSanitizer::getInstance();
 
 
  	while($myrow = $xoopsDB->fetchArray($result)){
