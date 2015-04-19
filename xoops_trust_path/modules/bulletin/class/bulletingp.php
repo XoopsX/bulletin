@@ -15,7 +15,7 @@ class BulletinGP{
 		$this->mydirname = $mydirname;
 	}
 
-	function &getInstance($mydirname)
+	public static function &getInstance($mydirname)
 	{
 		static $instance;
 		if (!isset($instance)) {
