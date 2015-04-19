@@ -11,7 +11,7 @@ $constpref = '_MI_' . strtoupper( $mydirname ) ;
 
 $modversion['name']        = constant($constpref.'_NAME');
 $modversion['version']     = 3.02;
-$modversion['detailed_version'] = "3.02.2";
+$modversion['detailed_version'] = "3.02.3";
 $modversion['description'] = constant($constpref.'_DESC');
 $modversion['credits']     = 'suin';
 $modversion['help']        = '';
