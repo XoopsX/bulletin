@@ -144,7 +144,7 @@ class BulletinTopic extends XoopsTopic{
 	 * @author nao-pon
 	 */
 	private function makeMyTopicOption($row, $preset_id, $order, $pid, $depth = 0) {
-		$myts = MyTextSanitizer::getInstance();
+		(method_exists('MyTextSanitizer', 'sGetInstance') and $myts = MyTextSanitizer::sGetInstance()) || $myts = MyTextSanitizer::getInstance();
 		$ret = '';
 		$sql = "SELECT topic_id, topic_title FROM ".$this->table.' WHERE topic_pid='.$pid;
 		if ( $order ) {

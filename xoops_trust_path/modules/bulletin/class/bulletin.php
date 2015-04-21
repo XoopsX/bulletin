@@ -142,7 +142,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Basic Processing
-	function &getAll( $mydirname , $criteria=array() , $asobject=true, $orderby="published DESC", $limit=0, $start=0)
+	public static function &getAll( $mydirname , $criteria=array() , $asobject=true, $orderby="published DESC", $limit=0, $start=0)
 	{
 		$db =& Database::getInstance();
 		$ret = array();
@@ -174,7 +174,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Basic Processing
-	function &countAll( $mydirname , $criteria=array())
+	public static function &countAll( $mydirname , $criteria=array())
 	{
 		$db =& Database::getInstance();
 		$where_query = "";
@@ -197,7 +197,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To gets a list of published articles
-	function getAllPublished( $mydirname , $limit4sql=0, $start4sql=0, $topic4sql=0, $ihome=1, $asobject=true, $topic_recursive=false, $gpermited=false)
+	public static function getAllPublished( $mydirname , $limit4sql=0, $start4sql=0, $topic4sql=0, $ihome=1, $asobject=true, $topic_recursive=false, $gpermited=false)
 	{
 		$gperm =& BulletinGP::getInstance($mydirname) ;
 
@@ -245,7 +245,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get a list of articles for the Archives
-	function getArchives( $mydirname , $monstart4sql=null, $monend4sql=null, $limit4sql=0, $start4sql=0, $asobject=true, $gpermited=false)
+	public static function getArchives( $mydirname , $monstart4sql=null, $monend4sql=null, $limit4sql=0, $start4sql=0, $asobject=true, $gpermited=false)
 	{
 		$gperm =& BulletinGP::getInstance($mydirname) ;
 
@@ -278,7 +278,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get a list of awaiting approval articles
-	function getAllSubmitted( $mydirname , $limit4sql=0, $asobject=true)
+	public static function getAllSubmitted( $mydirname , $limit4sql=0, $asobject=true)
 	{
 		$limit4sql = intval($limit4sql);
 
@@ -290,7 +290,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get a list of articles to be published
-	function getAllAutoStory( $mydirname , $limit4sql=0, $asobject=true)
+	public static function getAllAutoStory( $mydirname , $limit4sql=0, $asobject=true)
 	{
 		$limit4sql = intval($limit4sql);
 
@@ -303,7 +303,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get a list of expired articles
-	function getAllExpired( $mydirname , $limit4sql=0, $start4sql=0, $topic4sql=0, $ihome=0, $asobject=true)
+	public static function getAllExpired( $mydirname , $limit4sql=0, $start4sql=0, $topic4sql=0, $ihome=0, $asobject=true)
 	{
 		$limit4sql = intval($limit4sql);
 		$start4sql = intval($start4sql);
@@ -326,7 +326,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get a list of articles based on the date
-	function getAllToday( $mydirname , $limit4sql=0, $start4sql=0, $caldate, $asobject=true, $gpermited=false)
+	public static function getAllToday( $mydirname , $limit4sql=0, $start4sql=0, $caldate, $asobject=true, $gpermited=false)
 	{
 		$gperm =& BulletinGP::getInstance($mydirname) ;
 
@@ -367,7 +367,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// To get all the articles belonging to the topic
-	function getAllByTopic( $mydirname , $topicid )
+	public static function getAllByTopic( $mydirname , $topicid )
 	{
 		$criteria = array();
 		$criteria[] = "topicid=".intval($topicid);
@@ -471,7 +471,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Whether there is a post
-	function isPublishedExists( $mydirname , $storyid=0)
+	public static function isPublishedExists( $mydirname , $storyid=0)
 	{
 		$storyid = intval($storyid);
 
@@ -520,7 +520,7 @@ class Bulletin extends XoopsObject{
 
 
 	// class method
-	function makeCategoryArrayForSelect( $mydirname , $pad_string = '--' )
+	public static function makeCategoryArrayForSelect( $mydirname , $pad_string = '--' )
 	{
 		(method_exists('MyTextSanitizer', 'sGetInstance') and $ts =& MyTextSanitizer::sGetInstance()) || $ts =& MyTextSanitizer::getInstance();
 		$cat_tree = Bulletin::getTreeCategories();
@@ -534,7 +534,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Count the number of articles published
-	function countPublished( $mydirname , $topicid=0,$topic_recursive=false, $gpermited=false)
+	public static function countPublished( $mydirname , $topicid=0,$topic_recursive=false, $gpermited=false)
 	{
 		$gperm =& BulletinGP::getInstance($mydirname) ;
 
@@ -570,7 +570,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Count the number of awaiting approval articles
-	function countSubmitted( $mydirname )
+	public static function countSubmitted( $mydirname )
 	{
 		$criteria = array();
 		$criteria[] = "type=0";
@@ -580,7 +580,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Count the number of articles to be published
-	function countAutoStory( $mydirname )
+	public static function countAutoStory( $mydirname )
 	{
 		$criteria = array();
 		$criteria[] = 'type > 0';
@@ -591,7 +591,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Count the number of expired articles
-	function countExpired( $mydirname , $topic4sql=0, $ihome=0)
+	public static function countExpired( $mydirname , $topic4sql=0, $ihome=0)
 	{
 		$topic4sql = intval($topic4sql);
 
@@ -612,7 +612,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Count the number of articles of the day
-	function countPublishedByDate( $mydirname , $caldate, $gpermited=false)
+	public static function countPublishedByDate( $mydirname , $caldate, $gpermited=false)
 	{
 		$gperm =& BulletinGP::getInstance($mydirname) ;
 
@@ -661,7 +661,7 @@ class Bulletin extends XoopsObject{
 
 	// class method
 	// Returns an array with the time stamp of posts
-	function getPublishedDays( $mydirname , $limit=0 , $start=0 , $gpermited=false )
+	public static function getPublishedDays( $mydirname , $limit=0 , $start=0 , $gpermited=false )
 	{
 		$db =& Database::getInstance();
 		$gperm =& BulletinGP::getInstance($mydirname) ;
