@@ -194,7 +194,7 @@ function bulletin_onupdate_base( $module, $prev_version , $mydirname )
 	}
 	// hostname to VARCHAR(39) from 3.03
 	if ( $prev_version < 303 ) {
-		$db->queryF( 'ALTER TABLE `'.$db->prefix($mydirname.'_stories').'` CHANGE `hostname` `hostname` VARCHAR(40)' );
+		$db->queryF( 'ALTER TABLE `'.$db->prefix($mydirname.'_stories').'` CHANGE `hostname` `hostname` VARCHAR(39)' );
 		$msgs[] = 'Database table stories: hostname to VARCHAR(39)';
 	}
 
