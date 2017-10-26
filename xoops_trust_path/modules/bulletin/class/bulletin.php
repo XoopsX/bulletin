@@ -28,7 +28,7 @@ class Bulletin extends XoopsObject{
 		$this->initVar("created", XOBJ_DTYPE_INT, null, false);
 		$this->initVar("published", XOBJ_DTYPE_INT, null, false);
 		$this->initVar("expired", XOBJ_DTYPE_INT, null, false);
-		$this->initVar("hostname", XOBJ_DTYPE_TXTBOX, null, false, 20);
+		$this->initVar("hostname", XOBJ_DTYPE_TXTBOX, null, false, 39);
 		$this->initVar("html", XOBJ_DTYPE_INT, 0, false);
 		$this->initVar("smiley", XOBJ_DTYPE_INT, 1, false);
 		$this->initVar("br", XOBJ_DTYPE_INT, 1, false);

@@ -9,7 +9,7 @@ CREATE TABLE `stories` (
   `created` int(10) unsigned NOT NULL default '0',
   `published` int(10) unsigned NOT NULL default '0',
   `expired` int(10) unsigned NOT NULL default '0',
-  `hostname` varchar(20) NOT NULL default '',
+  `hostname` varchar(39) NOT NULL default '',
   `html` tinyint(1) NOT NULL default '0',
   `smiley` tinyint(1) NOT NULL default '0',
   `br` tinyint(1) NOT NULL default '0',
