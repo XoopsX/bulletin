@@ -191,7 +191,7 @@ class BulletinGP{
 		} else {
 			$whr = "`groupid`=".intval(XOOPS_GROUP_ANONYMOUS) ;
 		}
-		$ret = "";
+		$ret = array();
 		$sql = "SELECT topic_id,SUM(can_post) AS can_post,SUM(can_edit) AS can_edit,SUM(can_delete) AS can_delete,SUM(post_auto_approved) AS post_auto_approved FROM ".$this->table_topic_access." WHERE ($whr) GROUP BY topic_id" ;
 		$result = $db->query( $sql );
 		if( $result ){
